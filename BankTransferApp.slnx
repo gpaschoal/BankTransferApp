@@ -1,12 +1,10 @@
 <Solution>
     <Folder Name="/Src/">
+        <Project Path="Src/BankTransferApp.AppHost/BankTransferApp.AppHost.csproj" />
         <Project Path="Src/BankTransferApp.Application/BankTransferApp.Application.csproj" />
         <Project Path="Src/BankTransferApp.Api/BankTransferApp.Api.csproj" />
         <Project Path="Src/BankTransferApp.Domain/BankTransferApp.Domain.csproj" />
         <Project Path="Src/BankTransferApp.Infrastructure/BankTransferApp.Infrastructure.csproj" />
-    </Folder>
-    <Folder Name="/Src/Aspire/">
-        <Project Path="Src/BankTransferApp.AppHost/BankTransferApp.AppHost.csproj" />
         <Project Path="Src/BankTransferApp.ServiceDefaults/BankTransferApp.ServiceDefaults.csproj" />
     </Folder>
 </Solution>
