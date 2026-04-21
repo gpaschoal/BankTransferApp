@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="BankTransferApp.Api/BankTransferApp.Api.csproj" />
+  <Project Path="BankTransferApp.AppHost/BankTransferApp.AppHost.csproj" />
+  <Project Path="BankTransferApp.ServiceDefaults/BankTransferApp.ServiceDefaults.csproj" />
+</Solution>
