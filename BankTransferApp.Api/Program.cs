@@ -12,7 +12,10 @@ var app = builder.Build();
 app.MapDefaultEndpoints();
 
 app.MapOpenApi();
-app.MapScalarApiReference();
+app.MapScalarApiReference(options =>
+{
+    options.Theme = ScalarTheme.Moon;
+});
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
