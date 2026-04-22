@@ -10,13 +10,16 @@ public class UserEntity : IEntity
     public AddressValueObject Address { get; set; }
     public TelephoneValueObject Cellphone { get; set; }
     public TelephoneValueObject HomePhone { get; set; }
+    public PasswordValueObject Password { get; set; }
+
 
     public static UserEntity Create(
         PersonNameValueObject name,
         CpfValueObject cpfDocument,
         AddressValueObject address,
         TelephoneValueObject cellphone,
-        TelephoneValueObject homePhone)
+        TelephoneValueObject homePhone,
+        PasswordValueObject password)
     {
         return new UserEntity
         {
@@ -25,7 +28,8 @@ public class UserEntity : IEntity
             CpfDocument = cpfDocument,
             Address = address,
             Cellphone = cellphone,
-            HomePhone = homePhone
+            HomePhone = homePhone,
+            Password = password
         };
     }
 }
