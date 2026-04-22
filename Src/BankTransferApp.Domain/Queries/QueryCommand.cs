@@ -1,8 +1,8 @@
 ﻿namespace BankTransferApp.Domain.Queries;
 
-public class IQueryCommand
+public class QueryCommand
 {
-    public IQueryCommand()
+    public QueryCommand()
     {
         if (PageSize <= 0) PageSize = 10;
 
@@ -11,7 +11,7 @@ public class IQueryCommand
         if (Page <= 0) Page = 1;
     }
 
-    public int Page { get; init; }
+    public int Page { get; set; }
     public int PageSize { get; set; }
     public SortProperty[] Sort { get; set; } = [];
     public SearchProperty[] Search { get; set; } = [];
