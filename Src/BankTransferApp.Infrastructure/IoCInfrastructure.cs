@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BankTransferApp.Domain.Repositories;
+using BankTransferApp.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,5 +15,7 @@ public static class IoCInfrastructure
             string connectionString = configuration.GetConnectionString("DbContextBankTransferApp")!;
             options.UseNpgsql(connectionString);
         });
+
+        services.AddScoped<IUserRepository, UserRepository>();
     }
 }
