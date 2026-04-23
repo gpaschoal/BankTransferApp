@@ -22,8 +22,4 @@
     <ProjectReference Include="..\BankTransferApp.ServiceDefaults\BankTransferApp.ServiceDefaults.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>
