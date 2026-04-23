@@ -15,5 +15,9 @@ public class CnpjValueObject : AbstractDocumentValueObject
         throw new NotImplementedException();
     }
 
-    private bool IsValid(string cnpj) { return true; }
+    protected override bool IsValid(string value)
+    {
+        // Implement CNPJ validation logic here
+        return string.IsNullOrWhiteSpace(value);
+    }
 }

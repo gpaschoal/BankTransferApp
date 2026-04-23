@@ -1,13 +1,16 @@
 ﻿namespace BankTransferApp.Domain.ValueObjects;
 
-public record TelephoneValueObject(string AreaCode, string Number);
-
-public class PasswordValueObject(string Value)
+public record TelephoneValueObject
 {
-    public bool IsEqual(string hash)
-    {
-        if (string.IsNullOrWhiteSpace(hash)) return false;
+    public string AreaCode { get; }
+    public string Number { get; }
 
-        return hash.Equals(Value);
+    public TelephoneValueObject(string areaCode, string number)
+    {
+        AreaCode = areaCode;
+        Number = number;
     }
+
+    // EF Core requires a parameterless constructor for value objects
+    public TelephoneValueObject() { }
 }

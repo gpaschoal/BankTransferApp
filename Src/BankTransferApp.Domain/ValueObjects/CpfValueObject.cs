@@ -2,6 +2,8 @@
 
 public class CpfValueObject : AbstractDocumentValueObject
 {
+    public CpfValueObject() { }
+
     public CpfValueObject(string value)
     {
         Value = Normalize(value);
@@ -14,5 +16,9 @@ public class CpfValueObject : AbstractDocumentValueObject
         throw new NotImplementedException();
     }
 
-    private bool IsValid(string cpf) { return true; }
+    protected override bool IsValid(string value)
+    {
+        // Implement CPF validation logic here
+        return string.IsNullOrWhiteSpace(value);
+    }
 }
