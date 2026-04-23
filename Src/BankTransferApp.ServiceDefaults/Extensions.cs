@@ -1,3 +1,4 @@
+using BankTransferApp.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.DependencyInjection;
@@ -60,6 +61,8 @@ public static class Extensions
             });
 
         builder.AddOpenTelemetryExporters();
+
+        IoCInfrastructure.AddInfrastructure(builder.Services, builder.Configuration);
 
         return builder;
     }
