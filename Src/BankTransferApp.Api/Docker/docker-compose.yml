@@ -1,0 +1,15 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres-dotnet
+    restart: always
+    environment:
+      POSTGRES_DB: bank_transfer
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - C:/docker/postgres/bank_transfer:/var/lib/postgresql/data
