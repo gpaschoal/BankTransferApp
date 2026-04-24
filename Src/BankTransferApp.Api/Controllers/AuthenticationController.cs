@@ -13,9 +13,9 @@ public class AuthenticationController : Controller
     [AllowAnonymous]
     [HttpPost]
     [Route("UserSignIn")]
-    [ProducesResponseType(typeof(CustomResultData<Guid>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(CustomResultData), StatusCodes.Status500InternalServerError)]
-    [ProducesResponseType(typeof(CustomResultData), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ResultData<Guid>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResultData), StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(typeof(ResultData), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> SignIn(
         [FromServices] UserSignInHandler handler,
         [FromBody] UserSignInCommand command,
