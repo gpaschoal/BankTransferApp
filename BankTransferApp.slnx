@@ -7,4 +7,7 @@
         <Project Path="Src/BankTransferApp.Infrastructure/BankTransferApp.Infrastructure.csproj" />
         <Project Path="Src/BankTransferApp.ServiceDefaults/BankTransferApp.ServiceDefaults.csproj" />
     </Folder>
+    <Folder Name="/Test/">
+        <Project Path="Test/BankTransferApp.Application.Test/BankTransferApp.Application.Test.csproj" Id="58836947-e6a4-4a11-b989-4dcd74c409ba" />
+    </Folder>
 </Solution>
