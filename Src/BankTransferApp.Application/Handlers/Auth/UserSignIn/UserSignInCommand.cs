@@ -5,8 +5,9 @@ namespace BankTransferApp.Application.Handlers.Auth.UserSignIn;
 
 public record UserSignInCommand(
         PersonNameValueObject Name,
-        CpfValueObject CpfDocument,
+        string Cpf,
         AddressValueObject Address,
         TelephoneValueObject Cellphone,
         TelephoneValueObject HomePhone,
-        PasswordValueObject Password) : ICommand;
+        string Password,
+        string PasswordConfirmation) : ICommand;
