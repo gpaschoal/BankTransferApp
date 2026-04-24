@@ -1,5 +1,4 @@
-﻿using BankTransferApp.Api.Attributes;
-using BankTransferApp.Application.Handlers.Auth.UserSignIn;
+﻿using BankTransferApp.Application.Handlers.Auth.UserSignIn;
 using BankTransferApp.Domain.Handlers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +16,6 @@ public class AuthenticationController : Controller
     [ProducesResponseType(typeof(CustomResultData<Guid>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(CustomResultData), StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(CustomResultData), StatusCodes.Status400BadRequest)]
-    [Transactional]
     public async Task<IActionResult> SignIn(
         [FromServices] UserSignInHandler handler,
         [FromBody] UserSignInCommand command,
