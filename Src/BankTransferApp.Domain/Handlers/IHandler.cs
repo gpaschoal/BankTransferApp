@@ -1,6 +1,6 @@
 ﻿namespace BankTransferApp.Domain.Handlers;
 
-public interface ICommandHandler<in TRequest, TResult>
+public interface IHandler<in TRequest, TResult>
     where TRequest : class, ICommand
     where TResult : CustomResultData, new()
 {
