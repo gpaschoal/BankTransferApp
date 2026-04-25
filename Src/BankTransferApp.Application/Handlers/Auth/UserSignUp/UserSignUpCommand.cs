@@ -2,9 +2,9 @@
 using BankTransferApp.Domain.Entities;
 using BankTransferApp.Domain.Handlers;
 
-namespace BankTransferApp.Application.Handlers.Auth.UserSignIn;
+namespace BankTransferApp.Application.Handlers.Auth.UserSignUp;
 
-public record UserSignInCommand(
+public record UserSignUpCommand(
         PersonNameCommand Name,
         string Cpf,
         AddressCommand Address,

@@ -1,11 +1,11 @@
 ﻿using BankTransferApp.Application.Shared.Commands;
 using FluentValidation;
 
-namespace BankTransferApp.Application.Handlers.Auth.UserSignIn;
+namespace BankTransferApp.Application.Handlers.Auth.UserSignUp;
 
-internal sealed class UserSignInValidator : AbstractValidator<UserSignInCommand>
+internal sealed class UserSignUpValidator : AbstractValidator<UserSignUpCommand>
 {
-    public UserSignInValidator()
+    public UserSignUpValidator()
     {
         RuleFor(x => x.Name).SetValidator(new PersonNameCommandValidator());
 

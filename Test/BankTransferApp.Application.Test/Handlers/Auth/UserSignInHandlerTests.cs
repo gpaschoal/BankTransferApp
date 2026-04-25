@@ -1,4 +1,4 @@
-﻿using BankTransferApp.Application.Handlers.Auth.UserSignIn;
+﻿using BankTransferApp.Application.Handlers.Auth.UserSignUp;
 using BankTransferApp.Application.Shared.Commands;
 using BankTransferApp.Domain.Entities;
 using BankTransferApp.Domain.Repositories;
@@ -10,9 +10,9 @@ using Shouldly;
 namespace BankTransferApp.Application.Test.Handlers.Auth;
 
 [TestClass]
-public class UserSignInHandlerTests
+public class UserSignUpHandlerTests
 {
-    private static UserSignInCommand MakeValidCommand(
+    private static UserSignUpCommand MakeValidCommand(
         PersonNameCommand name = null,
         string cpf = null,
         AddressCommand address = null,
@@ -34,18 +34,18 @@ public class UserSignInHandlerTests
     [TestMethod]
     public async Task InvalidCommand_ShouldReturnValidationErrors()
     {
-        var loggerMock = new Mock<ILogger<UserSignInHandler>>();
+        var loggerMock = new Mock<ILogger<UserSignUpHandler>>();
         var unitOfWorkMock = new Mock<IUnitOfWork>();
         var userRepositoryMock = new Mock<IUserRepository>();
         var passwordHasherMock = new Mock<IPasswordHasher>();
 
-        var sut = new UserSignInHandler(
+        var sut = new UserSignUpHandler(
                             logger: loggerMock.Object,
                             unitOfWork: unitOfWorkMock.Object,
                             userRepository: userRepositoryMock.Object,
                             passwordHasher: passwordHasherMock.Object);
 
-        var command = new UserSignInCommand(null, null, null, null, null, null, null);
+        var command = new UserSignUpCommand(null, null, null, null, null, null, null);
 
         var result = await sut.HandleAsync(command, CancellationToken.None);
 
@@ -61,7 +61,7 @@ public class UserSignInHandlerTests
     [TestMethod]
     public async Task InvalidCommand_ShouldReturnCpfAlreadyExistsError()
     {
-        var loggerMock = new Mock<ILogger<UserSignInHandler>>();
+        var loggerMock = new Mock<ILogger<UserSignUpHandler>>();
         var unitOfWorkMock = new Mock<IUnitOfWork>();
         var userRepositoryMock = new Mock<IUserRepository>();
         var passwordHasherMock = new Mock<IPasswordHasher>();
@@ -70,7 +70,7 @@ public class UserSignInHandlerTests
 
         userRepositoryMock.Setup(r => r.UserExistsByCpfAsync(command.Cpf, CancellationToken.None)).ReturnsAsync(true);
 
-        var sut = new UserSignInHandler(
+        var sut = new UserSignUpHandler(
                             logger: loggerMock.Object,
                             unitOfWork: unitOfWorkMock.Object,
                             userRepository: userRepositoryMock.Object,
@@ -93,7 +93,7 @@ public class UserSignInHandlerTests
     [TestMethod]
     public async Task ValidCommand_ShouldRegisterAnUser()
     {
-        var loggerMock = new Mock<ILogger<UserSignInHandler>>();
+        var loggerMock = new Mock<ILogger<UserSignUpHandler>>();
         var unitOfWorkMock = new Mock<IUnitOfWork>();
         var userRepositoryMock = new Mock<IUserRepository>();
         var passwordHasherMock = new Mock<IPasswordHasher>();
@@ -103,7 +103,7 @@ public class UserSignInHandlerTests
         userRepositoryMock.Setup(r => r.UserExistsByCpfAsync(command.Cpf, CancellationToken.None)).ReturnsAsync(false);
         passwordHasherMock.Setup(p => p.Hash(command.Password)).Returns("hashed-password");
 
-        var sut = new UserSignInHandler(
+        var sut = new UserSignUpHandler(
                             logger: loggerMock.Object,
                             unitOfWork: unitOfWorkMock.Object,
                             userRepository: userRepositoryMock.Object,
@@ -126,7 +126,7 @@ public class UserSignInHandlerTests
     [TestMethod]
     public async Task InvalidCommand_ShouldRollbackWhenThrowsAnException()
     {
-        var loggerMock = new Mock<ILogger<UserSignInHandler>>();
+        var loggerMock = new Mock<ILogger<UserSignUpHandler>>();
         var unitOfWorkMock = new Mock<IUnitOfWork>();
         var userRepositoryMock = new Mock<IUserRepository>();
         var passwordHasherMock = new Mock<IPasswordHasher>();
@@ -138,7 +138,7 @@ public class UserSignInHandlerTests
 
         unitOfWorkMock.Setup(u => u.CommitTransactionAsync(CancellationToken.None)).ThrowsAsync(new Exception("Oh no! Commit failed!"));
 
-        var sut = new UserSignInHandler(
+        var sut = new UserSignUpHandler(
                             logger: loggerMock.Object,
                             unitOfWork: unitOfWorkMock.Object,
                             userRepository: userRepositoryMock.Object,

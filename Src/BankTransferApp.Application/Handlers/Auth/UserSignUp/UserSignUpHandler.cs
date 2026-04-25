@@ -4,17 +4,17 @@ using BankTransferApp.Domain.Repositories;
 using BankTransferApp.Domain.Services;
 using Microsoft.Extensions.Logging;
 
-namespace BankTransferApp.Application.Handlers.Auth.UserSignIn;
+namespace BankTransferApp.Application.Handlers.Auth.UserSignUp;
 
-public sealed class UserSignInHandler(
-    ILogger<UserSignInHandler> logger,
+public sealed class UserSignUpHandler(
+    ILogger<UserSignUpHandler> logger,
     IUnitOfWork unitOfWork,
     IUserRepository userRepository,
-    IPasswordHasher passwordHasher) : IHandler<UserSignInCommand, Result<Guid>>
+    IPasswordHasher passwordHasher) : IHandler<UserSignUpCommand, Result<Guid>>
 {
-    public async Task<Result<Guid>> HandleAsync(UserSignInCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> HandleAsync(UserSignUpCommand request, CancellationToken cancellationToken)
     {
-        UserSignInValidator validator = new();
+        UserSignUpValidator validator = new();
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
         if (!validationResult.IsValid)
