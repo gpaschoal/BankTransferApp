@@ -6,8 +6,15 @@ namespace BankTransferApp.Infrastructure.Repositories;
 
 public class UserRepository(AppDbContext dbContext) : RepositoryBase<UserEntity>(dbContext), IUserRepository
 {
+    public async Task<UserEntity> GetUserByCpfAsync(string cpf, CancellationToken cancellationToken)
+    {
+        return await Queryable
+            .SingleOrDefaultAsync(u => u.CpfDocument.Value == cpf, cancellationToken);
+    }
+
     public async Task<bool> UserExistsByCpfAsync(string cpf, CancellationToken cancellationToken)
     {
-        return await Queryable.AnyAsync(u => u.CpfDocument.Value == cpf, cancellationToken);
+        return await Queryable
+            .AnyAsync(u => u.CpfDocument.Value == cpf, cancellationToken);
     }
 }

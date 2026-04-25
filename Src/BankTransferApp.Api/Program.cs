@@ -6,6 +6,8 @@ builder.AddServiceDefaults();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+builder.AddOptions();
+builder.AddJwtAuthentication();
 
 var app = builder.Build();
 
@@ -21,5 +23,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapJwtAuthorization();
 
 app.Run();

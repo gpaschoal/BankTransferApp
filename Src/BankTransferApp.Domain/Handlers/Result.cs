@@ -9,6 +9,11 @@ public class Result
         _errors = new Dictionary<string, IList<string>>();
     }
 
+    public Result(string key, string errorMessage) : this()
+    {
+        AddError(key, errorMessage);
+    }
+
     public bool IsValid => !_errors.Any();
 
     public IReadOnlyDictionary<string, IList<string>> Errors => _errors.ToDictionary(kv => kv.Key, kv => kv.Value);
@@ -25,15 +30,18 @@ public class Result
 public class Result<T>
     : Result where T : new()
 {
-    public Result()
+    public Result() : base()
     {
         Data = new T();
     }
 
-    public Result(T data)
+    public Result(T data): base()
     {
         Data = data;
     }
+
+    public Result(string key, string errorMessage) : base(key, errorMessage)
+    { }
 
     public T Data { get; }
 }

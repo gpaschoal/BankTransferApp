@@ -1,6 +1,5 @@
 ﻿using BankTransferApp.Application.Shared.Commands;
 using BankTransferApp.Domain.Entities;
-using BankTransferApp.Domain.Handlers;
 
 namespace BankTransferApp.Application.Handlers.Auth.UserSignUp;
 
@@ -11,7 +10,7 @@ public record UserSignUpCommand(
         TelephoneCommand Cellphone,
         TelephoneCommand HomePhone,
         string Password,
-        string PasswordConfirmation) : ICommand
+        string PasswordConfirmation)
 {
     public UserEntity ToEntity(string hashedPassword) =>
         UserEntity.Create(

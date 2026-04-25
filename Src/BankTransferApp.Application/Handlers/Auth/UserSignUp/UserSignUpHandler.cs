@@ -22,17 +22,11 @@ public sealed class UserSignUpHandler(
             return validationResult.FromValidator<Result<Guid>>();
         }
 
-        Result<Guid> customResultData = new();
-
         try
         {
             var existingUser = await userRepository.UserExistsByCpfAsync(request.Cpf, cancellationToken);
 
-            if (existingUser)
-            {
-                customResultData.AddError(nameof(request.Cpf), "A user with the provided CPF already exists.");
-                return customResultData;
-            }
+            if (existingUser) return new(nameof(request.Cpf), "A user with the provided CPF already exists.");
 
             await unitOfWork.BeginTransactionAsync(cancellationToken);
 
