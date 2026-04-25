@@ -2,7 +2,7 @@
 
 public interface IHandler<in TRequest, TResult>
     where TRequest : class, ICommand
-    where TResult : ResultData, new()
+    where TResult : Result, new()
 {
     Task<TResult> HandleAsync(TRequest request, CancellationToken cancellationToken);
 }

@@ -1,8 +1,8 @@
 ﻿using BankTransferApp.Application.Handlers.Auth.UserSignIn;
+using BankTransferApp.Application.Shared.Commands;
 using BankTransferApp.Domain.Entities;
 using BankTransferApp.Domain.Repositories;
 using BankTransferApp.Domain.Services;
-using BankTransferApp.Domain.ValueObjects;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Shouldly;
@@ -13,11 +13,11 @@ namespace BankTransferApp.Application.Test.Handlers.Auth;
 public class UserSignInHandlerTests
 {
     private static UserSignInCommand MakeValidCommand(
-        PersonNameValueObject name = null,
+        PersonNameCommand name = null,
         string cpf = null,
-        AddressValueObject address = null,
-        TelephoneValueObject cellphone = null,
-        TelephoneValueObject homePhone = null,
+        AddressCommand address = null,
+        TelephoneCommand cellphone = null,
+        TelephoneCommand homePhone = null,
         string password = null,
         string passwordConfirmation = null)
     {

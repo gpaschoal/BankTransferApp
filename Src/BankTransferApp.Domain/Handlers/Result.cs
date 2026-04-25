@@ -1,10 +1,10 @@
 ﻿namespace BankTransferApp.Domain.Handlers;
 
-public class ResultData
+public class Result
 {
     private readonly IDictionary<string, IList<string>> _errors;
 
-    public ResultData()
+    public Result()
     {
         _errors = new Dictionary<string, IList<string>>();
     }
@@ -22,15 +22,15 @@ public class ResultData
     }
 }
 
-public class ResultData<T>
-    : ResultData where T : new()
+public class Result<T>
+    : Result where T : new()
 {
-    public ResultData()
+    public Result()
     {
         Data = new T();
     }
 
-    public ResultData(T data)
+    public Result(T data)
     {
         Data = data;
     }

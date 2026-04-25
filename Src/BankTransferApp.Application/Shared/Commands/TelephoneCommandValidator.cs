@@ -1,11 +1,10 @@
-﻿using BankTransferApp.Domain.ValueObjects;
-using FluentValidation;
+﻿using FluentValidation;
 
-namespace BankTransferApp.Application.Shared;
+namespace BankTransferApp.Application.Shared.Commands;
 
-internal sealed class TelephoneValueObjectValidator : AbstractValidator<TelephoneValueObject>
+public sealed class TelephoneCommandValidator : AbstractValidator<TelephoneCommand>
 {
-    public TelephoneValueObjectValidator()
+    public TelephoneCommandValidator()
     {
         RuleFor(x => x.AreaCode)
             .NotEmpty().WithMessage("Area code is required.")

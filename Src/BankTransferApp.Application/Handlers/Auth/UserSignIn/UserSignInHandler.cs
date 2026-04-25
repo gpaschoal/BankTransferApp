@@ -10,19 +10,19 @@ public sealed class UserSignInHandler(
     ILogger<UserSignInHandler> logger,
     IUnitOfWork unitOfWork,
     IUserRepository userRepository,
-    IPasswordHasher passwordHasher) : IHandler<UserSignInCommand, ResultData<Guid>>
+    IPasswordHasher passwordHasher) : IHandler<UserSignInCommand, Result<Guid>>
 {
-    public async Task<ResultData<Guid>> HandleAsync(UserSignInCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> HandleAsync(UserSignInCommand request, CancellationToken cancellationToken)
     {
         UserSignInValidator validator = new();
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
         if (!validationResult.IsValid)
         {
-            return validationResult.FromValidator<ResultData<Guid>>();
+            return validationResult.FromValidator<Result<Guid>>();
         }
 
-        ResultData<Guid> customResultData = new();
+        Result<Guid> customResultData = new();
 
         try
         {
@@ -38,7 +38,7 @@ public sealed class UserSignInHandler(
 
             var hashedPassword = passwordHasher.Hash(request.Password);
 
-            var user = request.ToUserEntity(hashedPassword);
+            var user = request.ToEntity(hashedPassword);
 
             await userRepository.CreateAsync(user, cancellationToken);
 

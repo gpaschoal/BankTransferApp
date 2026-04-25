@@ -1,25 +1,25 @@
-﻿using BankTransferApp.Domain.Entities;
+﻿using BankTransferApp.Application.Shared.Commands;
+using BankTransferApp.Domain.Entities;
 using BankTransferApp.Domain.Handlers;
-using BankTransferApp.Domain.ValueObjects;
 
 namespace BankTransferApp.Application.Handlers.Auth.UserSignIn;
 
 public record UserSignInCommand(
-        PersonNameValueObject Name,
+        PersonNameCommand Name,
         string Cpf,
-        AddressValueObject Address,
-        TelephoneValueObject Cellphone,
-        TelephoneValueObject HomePhone,
+        AddressCommand Address,
+        TelephoneCommand Cellphone,
+        TelephoneCommand HomePhone,
         string Password,
         string PasswordConfirmation) : ICommand
 {
-    public UserEntity ToUserEntity(string hashedPassword) =>
+    public UserEntity ToEntity(string hashedPassword) =>
         UserEntity.Create(
-            name: Name,
+            name: new(Name.FirstName, Name.LastName),
             cpfDocument: new(Cpf),
-            address: Address,
-            cellphone: Cellphone,
-            homePhone: HomePhone,
+            address: new(Address.Street, Address.City, Address.State, Address.ZipCode),
+            cellphone: new(Cellphone.AreaCode, Cellphone.Number),
+            homePhone: new(HomePhone.AreaCode, HomePhone.Number),
             password: new(hashedPassword)
         );
 }

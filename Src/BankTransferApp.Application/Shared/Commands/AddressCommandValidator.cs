@@ -1,11 +1,10 @@
-﻿using BankTransferApp.Domain.ValueObjects;
-using FluentValidation;
+﻿using FluentValidation;
 
-namespace BankTransferApp.Application.Shared;
+namespace BankTransferApp.Application.Shared.Commands;
 
-internal sealed class AddressValueObjectValidator : AbstractValidator<AddressValueObject>
+public sealed class AddressCommandValidator : AbstractValidator<AddressCommand>
 {
-    public AddressValueObjectValidator()
+    public AddressCommandValidator()
     {
         RuleFor(x => x.Street)
             .NotEmpty().WithMessage("Street is required.")

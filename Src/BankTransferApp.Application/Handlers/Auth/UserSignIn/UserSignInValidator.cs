@@ -1,4 +1,4 @@
-﻿using BankTransferApp.Application.Shared;
+﻿using BankTransferApp.Application.Shared.Commands;
 using FluentValidation;
 
 namespace BankTransferApp.Application.Handlers.Auth.UserSignIn;
@@ -7,7 +7,7 @@ internal sealed class UserSignInValidator : AbstractValidator<UserSignInCommand>
 {
     public UserSignInValidator()
     {
-        RuleFor(x => x.Name).SetValidator(new PersonNameValueObjectValidator());
+        RuleFor(x => x.Name).SetValidator(new PersonNameCommandValidator());
 
         RuleFor(x => x.Cpf)
             .NotEmpty().WithMessage("CPF is required.")
@@ -20,12 +20,12 @@ internal sealed class UserSignInValidator : AbstractValidator<UserSignInCommand>
             .Equal(x => x.Password).WithMessage("Password confirmation does not match the password.");
 
         RuleFor(x => x.Address).NotEmpty().WithMessage("Address is required.")
-            .SetValidator(new AddressValueObjectValidator());
+            .SetValidator(new AddressCommandValidator());
 
         RuleFor(x => x.Cellphone).NotEmpty().WithMessage("Cellphone is required.")
-            .SetValidator(new TelephoneValueObjectValidator());
+            .SetValidator(new TelephoneCommandValidator());
 
         RuleFor(x => x.HomePhone).NotEmpty().WithMessage("Home phone is required.")
-            .SetValidator(new TelephoneValueObjectValidator());
+            .SetValidator(new TelephoneCommandValidator());
     }
 }

@@ -6,7 +6,7 @@ namespace BankTransferApp.Application.Shared;
 public static class ValidatorMethods
 {
     public static R FromValidator<R>(this ValidationResult validationResult)
-        where R : ResultData, new()
+        where R : Result, new()
     {
         if (validationResult.IsValid)
             throw new InvalidOperationException("At this point, the validation result should be invalid.");

@@ -1,11 +1,10 @@
-﻿using BankTransferApp.Domain.ValueObjects;
-using FluentValidation;
+﻿using FluentValidation;
 
-namespace BankTransferApp.Application.Shared;
+namespace BankTransferApp.Application.Shared.Commands;
 
-internal sealed class PersonNameValueObjectValidator : AbstractValidator<PersonNameValueObject>
+public sealed class PersonNameCommandValidator : AbstractValidator<PersonNameCommand>
 {
-    public PersonNameValueObjectValidator()
+    public PersonNameCommandValidator()
     {
         RuleFor(x => x.FirstName)
             .NotEmpty().WithMessage("First name is required.")
