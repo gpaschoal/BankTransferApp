@@ -1,6 +1,7 @@
 ﻿using BankTransferApp.Application.Shared;
 using BankTransferApp.Domain.Handlers;
 using BankTransferApp.Domain.Repositories;
+using BankTransferApp.Domain.Services;
 using Microsoft.Extensions.Logging;
 
 namespace BankTransferApp.Application.Handlers.Auth.UserSignIn;
@@ -8,7 +9,8 @@ namespace BankTransferApp.Application.Handlers.Auth.UserSignIn;
 public sealed class UserSignInHandler(
     ILogger<UserSignInHandler> logger,
     IUnitOfWork unitOfWork,
-    IUserRepository userRepository) : IHandler<UserSignInCommand, ResultData<Guid>>
+    IUserRepository userRepository,
+    IPasswordHasher passwordHasher) : IHandler<UserSignInCommand, ResultData<Guid>>
 {
     public async Task<ResultData<Guid>> HandleAsync(UserSignInCommand request, CancellationToken cancellationToken)
     {
@@ -24,13 +26,25 @@ public sealed class UserSignInHandler(
 
         try
         {
+            var existingUser = await userRepository.UserExistsByCpfAsync(request.Cpf, cancellationToken);
+
+            if (existingUser)
+            {
+                customResultData.AddError(nameof(request.Cpf), "A user with the provided CPF already exists.");
+                return customResultData;
+            }
+
             await unitOfWork.BeginTransactionAsync();
 
-            /* cool stuff happens here! */
+            var hashedPassword = passwordHasher.Hash(request.Password);
+
+            var user = request.ToUserEntity(hashedPassword);
+
+            await userRepository.CreateAsync(user, cancellationToken);
 
             await unitOfWork.CommitTransactionAsync();
 
-            return customResultData;
+            return new(user.Id);
         }
         catch (Exception ex)
         {

@@ -1,4 +1,6 @@
 ﻿using BankTransferApp.Application.Handlers.Auth.UserSignIn;
+using BankTransferApp.Application.Service;
+using BankTransferApp.Domain.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,5 +11,7 @@ public static class IoCApplication
     public static void AddApplication(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<UserSignInHandler>();
+
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
     }
 }

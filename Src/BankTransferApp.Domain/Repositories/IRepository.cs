@@ -5,7 +5,7 @@ namespace BankTransferApp.Domain.Repositories;
 public interface IRepository<T>
     where T : class, IEntity
 {
-    Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<T> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
     Task CreateAsync(T entity, CancellationToken cancellationToken);
 

@@ -4,4 +4,5 @@ namespace BankTransferApp.Domain.Repositories;
 
 public interface IUserRepository : IRepository<UserEntity>
 {
+    public Task<bool> UserExistsByCpfAsync(string cpf, CancellationToken cancellationToken);
 }

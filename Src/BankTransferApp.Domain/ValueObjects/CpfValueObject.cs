@@ -13,12 +13,15 @@ public class CpfValueObject : AbstractDocumentValueObject
 
     public override string Normalize(string value)
     {
-        throw new NotImplementedException();
+        if (value is null) return "";
+
+        // Remove common CPF formatting characters (dots and dashes)
+        return value.Replace(".", "").Replace("-", "");
     }
 
     protected override bool IsValid(string value)
     {
         // Implement CPF validation logic here
-        return string.IsNullOrWhiteSpace(value);
+        return true;
     }
 }
