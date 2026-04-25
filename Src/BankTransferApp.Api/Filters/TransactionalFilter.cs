@@ -19,7 +19,7 @@ public class TransactionalFilter(IUnitOfWork unitOfWork) : IAsyncActionFilter
             return;
         }
 
-        await unitOfWork.BeginTransactionAsync();
+        await unitOfWork.BeginTransactionAsync(CancellationToken.None);
 
         try
         {
@@ -27,15 +27,15 @@ public class TransactionalFilter(IUnitOfWork unitOfWork) : IAsyncActionFilter
 
             if (result.Exception == null)
             {
-                await unitOfWork.CommitTransactionAsync();
+                await unitOfWork.CommitTransactionAsync(CancellationToken.None);
                 return;
             }
 
-            await unitOfWork.RollbackTransactionAsync();
+            await unitOfWork.RollbackTransactionAsync(CancellationToken.None);
         }
         catch
         {
-            await unitOfWork.RollbackTransactionAsync();
+            await unitOfWork.RollbackTransactionAsync(CancellationToken.None);
             throw;
         }
     }

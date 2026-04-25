@@ -34,7 +34,7 @@ public sealed class UserSignInHandler(
                 return customResultData;
             }
 
-            await unitOfWork.BeginTransactionAsync();
+            await unitOfWork.BeginTransactionAsync(cancellationToken);
 
             var hashedPassword = passwordHasher.Hash(request.Password);
 
@@ -42,14 +42,14 @@ public sealed class UserSignInHandler(
 
             await userRepository.CreateAsync(user, cancellationToken);
 
-            await unitOfWork.CommitTransactionAsync();
+            await unitOfWork.CommitTransactionAsync(cancellationToken);
 
             return new(user.Id);
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "An error occurred while processing UserSignInCommand.");
-            await unitOfWork.RollbackTransactionAsync();
+            await unitOfWork.RollbackTransactionAsync(cancellationToken);
             throw;
         }
     }
