@@ -1,161 +1,160 @@
-﻿using BankTransferApp.Application.Handlers.Auth.UserSignUp;
-using BankTransferApp.Application.Shared.Commands;
+﻿using BankTransferApp.Application.Handlers.Auth.UserSignIn;
+using BankTransferApp.Application.Shared.Options;
 using BankTransferApp.Domain.Entities;
 using BankTransferApp.Domain.Repositories;
 using BankTransferApp.Domain.Services;
+using BankTransferApp.Domain.ValueObjects;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moq;
 using Shouldly;
 
 namespace BankTransferApp.Application.Test.Handlers.Auth;
 
 [TestClass]
-public class UserSignUpHandlerTests
+public class UserSignInHandlerTests
 {
-    private static UserSignUpCommand MakeValidCommand(
-        PersonNameCommand name = null,
+    private static UserSignInCommand MakeValidCommand(
         string cpf = null,
-        AddressCommand address = null,
-        TelephoneCommand cellphone = null,
-        TelephoneCommand homePhone = null,
-        string password = null,
-        string passwordConfirmation = null)
+        string password = null)
     {
-        name ??= new("John", "Doe");
         cpf ??= "12345678900";
-        address ??= new("Av ", "West State", "dsd", "zip");
-        cellphone ??= new("550", "555-1234");
-        homePhone ??= new("550", "555-5678");
         password ??= "SecurePassword123";
-        passwordConfirmation ??= "SecurePassword123";
-        return new(name, cpf, address, cellphone, homePhone, password, passwordConfirmation);
+        return new(cpf, password);
     }
 
     [TestMethod]
     public async Task InvalidCommand_ShouldReturnValidationErrors()
     {
-        var loggerMock = new Mock<ILogger<UserSignUpHandler>>();
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
+        var loggerMock = new Mock<ILogger<UserSignInHandler>>();
         var userRepositoryMock = new Mock<IUserRepository>();
         var passwordHasherMock = new Mock<IPasswordHasher>();
+        var tokenServiceMock = new Mock<ITokenService>();
+        var tokenOptionMock = new Mock<IOptions<TokenOption>>();
 
-        var sut = new UserSignUpHandler(
-                            logger: loggerMock.Object,
-                            unitOfWork: unitOfWorkMock.Object,
-                            userRepository: userRepositoryMock.Object,
-                            passwordHasher: passwordHasherMock.Object);
-
-        var command = new UserSignUpCommand(null, null, null, null, null, null, null);
-
+        var sut = new UserSignInHandler(
+                        loggerMock.Object,
+                        userRepositoryMock.Object,
+                        passwordHasherMock.Object,
+                        tokenServiceMock.Object,
+                        tokenOptionMock.Object);
+        var command = new UserSignInCommand(null, null);
         var result = await sut.HandleAsync(command, CancellationToken.None);
-
         result.IsValid.ShouldBeFalse();
-        userRepositoryMock.Verify(r => r.UserExistsByCpfAsync(It.IsAny<string>(), CancellationToken.None), Times.Never);
-        unitOfWorkMock.Verify(u => u.BeginTransactionAsync(CancellationToken.None), Times.Never);
-        unitOfWorkMock.Verify(u => u.CommitTransactionAsync(CancellationToken.None), Times.Never);
-        unitOfWorkMock.Verify(u => u.RollbackTransactionAsync(CancellationToken.None), Times.Never);
-        passwordHasherMock.Verify(p => p.Hash(It.IsAny<string>()), Times.Never);
-        userRepositoryMock.Verify(r => r.CreateAsync(It.IsAny<UserEntity>(), CancellationToken.None), Times.Never);
+        result.Data.Token.ShouldBeNullOrWhiteSpace();
+        result.Data.ExpireAt.ShouldBeNull();
+        userRepositoryMock.Verify(x => x.GetUserByCpfAsync(It.IsAny<string>(), CancellationToken.None), Times.Never);
+        passwordHasherMock.Verify(x => x.Verify(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        tokenServiceMock.Verify(x => x.GenerateToken(It.IsAny<UserEntity>(), It.IsAny<Dictionary<string, string>>()), Times.Never);
     }
 
     [TestMethod]
-    public async Task InvalidCommand_ShouldReturnCpfAlreadyExistsError()
+    public async Task InvalidCommand_ShouldReturnInvalidWhenDoesNotFindUserByCPF()
     {
-        var loggerMock = new Mock<ILogger<UserSignUpHandler>>();
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
+        var loggerMock = new Mock<ILogger<UserSignInHandler>>();
         var userRepositoryMock = new Mock<IUserRepository>();
         var passwordHasherMock = new Mock<IPasswordHasher>();
+        var tokenServiceMock = new Mock<ITokenService>();
+        var tokenOptionMock = new Mock<IOptions<TokenOption>>();
 
+        userRepositoryMock.Setup(x => x.GetUserByCpfAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                          .ReturnsAsync((UserEntity)null);
+
+        var sut = new UserSignInHandler(
+                        loggerMock.Object,
+                        userRepositoryMock.Object,
+                        passwordHasherMock.Object,
+                        tokenServiceMock.Object,
+                        tokenOptionMock.Object);
         var command = MakeValidCommand();
-
-        userRepositoryMock.Setup(r => r.UserExistsByCpfAsync(command.Cpf, CancellationToken.None)).ReturnsAsync(true);
-
-        var sut = new UserSignUpHandler(
-                            logger: loggerMock.Object,
-                            unitOfWork: unitOfWorkMock.Object,
-                            userRepository: userRepositoryMock.Object,
-                            passwordHasher: passwordHasherMock.Object);
-
         var result = await sut.HandleAsync(command, CancellationToken.None);
-
         result.IsValid.ShouldBeFalse();
-        result.Errors.ShouldHaveSingleItem();
-        result.Errors.ShouldContain(e => e.Value.Single().Equals("A user with the provided CPF already exists."));
-        result.Errors.ShouldContain(e => e.Key.Equals(nameof(command.Cpf)));
-        userRepositoryMock.Verify(r => r.UserExistsByCpfAsync(It.IsAny<string>(), CancellationToken.None), Times.Once);
-        unitOfWorkMock.Verify(u => u.BeginTransactionAsync(CancellationToken.None), Times.Never);
-        unitOfWorkMock.Verify(u => u.CommitTransactionAsync(CancellationToken.None), Times.Never);
-        unitOfWorkMock.Verify(u => u.RollbackTransactionAsync(CancellationToken.None), Times.Never);
-        passwordHasherMock.Verify(p => p.Hash(It.IsAny<string>()), Times.Never);
-        userRepositoryMock.Verify(r => r.CreateAsync(It.IsAny<UserEntity>(), CancellationToken.None), Times.Never);
+        result.Errors.Single().Value.Single().ShouldBe("Invalid CPF or password.");
+        result.Errors.Single().Key.ShouldBe("Authentication");
+        result.Data.ShouldBeNull();
+        userRepositoryMock.Verify(x => x.GetUserByCpfAsync(It.IsAny<string>(), CancellationToken.None), Times.Once);
+        passwordHasherMock.Verify(x => x.Verify(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        tokenServiceMock.Verify(x => x.GenerateToken(It.IsAny<UserEntity>(), It.IsAny<Dictionary<string, string>>()), Times.Never);
     }
 
     [TestMethod]
-    public async Task ValidCommand_ShouldRegisterAnUser()
+    public async Task InvalidCommand_ShouldReturnInvalidWhenPasswordDoesNotMatch()
     {
-        var loggerMock = new Mock<ILogger<UserSignUpHandler>>();
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
+        var loggerMock = new Mock<ILogger<UserSignInHandler>>();
         var userRepositoryMock = new Mock<IUserRepository>();
         var passwordHasherMock = new Mock<IPasswordHasher>();
+        var tokenServiceMock = new Mock<ITokenService>();
+        var tokenOptionMock = new Mock<IOptions<TokenOption>>();
+        var userEntity = UserEntity.Create(
+            new PersonNameValueObject("John", "Doe"),
+            new CpfValueObject("12345678900"),
+            new AddressValueObject("123 Main St", "City", "State", "12345"),
+            new TelephoneValueObject("22", "1234567890"),
+            new TelephoneValueObject("22", "1234567890"),
+            new PasswordValueObject("hashedPassword"));
 
+        userRepositoryMock.Setup(x => x.GetUserByCpfAsync(userEntity.CpfDocument.Value, It.IsAny<CancellationToken>()))
+                          .ReturnsAsync(userEntity);
+        passwordHasherMock.Setup(x => x.Verify(It.IsAny<string>(), It.IsAny<string>()))
+                          .Returns(false);
+
+        var sut = new UserSignInHandler(
+                        loggerMock.Object,
+                        userRepositoryMock.Object,
+                        passwordHasherMock.Object,
+                        tokenServiceMock.Object,
+                        tokenOptionMock.Object);
         var command = MakeValidCommand();
-
-        userRepositoryMock.Setup(r => r.UserExistsByCpfAsync(command.Cpf, CancellationToken.None)).ReturnsAsync(false);
-        passwordHasherMock.Setup(p => p.Hash(command.Password)).Returns("hashed-password");
-
-        var sut = new UserSignUpHandler(
-                            logger: loggerMock.Object,
-                            unitOfWork: unitOfWorkMock.Object,
-                            userRepository: userRepositoryMock.Object,
-                            passwordHasher: passwordHasherMock.Object);
-
         var result = await sut.HandleAsync(command, CancellationToken.None);
+        result.IsValid.ShouldBeFalse();
+        result.Errors.Single().Value.Single().ShouldBe("Invalid CPF or password.");
+        result.Errors.Single().Key.ShouldBe("Authentication");
+        result.Data.ShouldBeNull();
+        userRepositoryMock.Verify(x => x.GetUserByCpfAsync(It.IsAny<string>(), CancellationToken.None), Times.Once);
+        passwordHasherMock.Verify(x => x.Verify(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+        tokenServiceMock.Verify(x => x.GenerateToken(It.IsAny<UserEntity>(), It.IsAny<Dictionary<string, string>>()), Times.Never);
+    }
 
+    [TestMethod]
+    public async Task ValidCommand_ShouldReturnToken()
+    {
+        var loggerMock = new Mock<ILogger<UserSignInHandler>>();
+        var userRepositoryMock = new Mock<IUserRepository>();
+        var passwordHasherMock = new Mock<IPasswordHasher>();
+        var tokenServiceMock = new Mock<ITokenService>();
+        var tokenOptionMock = new Mock<IOptions<TokenOption>>();
+        var userEntity = UserEntity.Create(
+            new PersonNameValueObject("John", "Doe"),
+            new CpfValueObject("12345678900"),
+            new AddressValueObject("123 Main St", "City", "State", "12345"),
+            new TelephoneValueObject("22", "1234567890"),
+            new TelephoneValueObject("22", "1234567890"),
+            new PasswordValueObject("hashedPassword"));
+
+        userRepositoryMock.Setup(x => x.GetUserByCpfAsync(userEntity.CpfDocument.Value, It.IsAny<CancellationToken>()))
+                          .ReturnsAsync(userEntity);
+        passwordHasherMock.Setup(x => x.Verify(It.IsAny<string>(), It.IsAny<string>()))
+                          .Returns(true);
+        tokenServiceMock.Setup(x => x.GenerateToken(userEntity, It.IsAny<Dictionary<string, string>>()))
+                        .Returns("mockedToken");
+        tokenOptionMock.Setup(x => x.Value)
+                       .Returns(new TokenOption { ExpirationInHours = 1 });
+        var sut = new UserSignInHandler(
+                        loggerMock.Object,
+                        userRepositoryMock.Object,
+                        passwordHasherMock.Object,
+                        tokenServiceMock.Object,
+                        tokenOptionMock.Object);
+        var command = MakeValidCommand();
+        var startDate = DateTime.UtcNow;
+        var result = await sut.HandleAsync(command, CancellationToken.None);
+        var endDate = DateTime.UtcNow.AddHours(tokenOptionMock.Object.Value.ExpirationInHours);
         result.IsValid.ShouldBeTrue();
-        result.Errors.ShouldBeEmpty();
-
-        userRepositoryMock.Verify(r => r.UserExistsByCpfAsync(It.IsAny<string>(), CancellationToken.None), Times.Once);
-        unitOfWorkMock.Verify(u => u.BeginTransactionAsync(CancellationToken.None), Times.Once);
-        unitOfWorkMock.Verify(u => u.CommitTransactionAsync(CancellationToken.None), Times.Once);
-        passwordHasherMock.Verify(p => p.Hash(command.Password), Times.Once);
-        userRepositoryMock.Verify(r => r.CreateAsync(It.IsAny<UserEntity>(), CancellationToken.None), Times.Once);
-
-        unitOfWorkMock.Verify(u => u.RollbackTransactionAsync(CancellationToken.None), Times.Never);
-    }
-
-    [TestMethod]
-    public async Task InvalidCommand_ShouldRollbackWhenThrowsAnException()
-    {
-        var loggerMock = new Mock<ILogger<UserSignUpHandler>>();
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var userRepositoryMock = new Mock<IUserRepository>();
-        var passwordHasherMock = new Mock<IPasswordHasher>();
-
-        var command = MakeValidCommand();
-
-        userRepositoryMock.Setup(r => r.UserExistsByCpfAsync(command.Cpf, CancellationToken.None)).ReturnsAsync(false);
-        passwordHasherMock.Setup(p => p.Hash(command.Password)).Returns("hashed-password");
-
-        unitOfWorkMock.Setup(u => u.CommitTransactionAsync(CancellationToken.None)).ThrowsAsync(new Exception("Oh no! Commit failed!"));
-
-        var sut = new UserSignUpHandler(
-                            logger: loggerMock.Object,
-                            unitOfWork: unitOfWorkMock.Object,
-                            userRepository: userRepositoryMock.Object,
-                            passwordHasher: passwordHasherMock.Object);
-
-        try
-        {
-            _ = await sut.HandleAsync(command, CancellationToken.None);
-        }
-        catch { /* It throwns an error that should not be thrown!!! */ }
-
-        userRepositoryMock.Verify(r => r.UserExistsByCpfAsync(It.IsAny<string>(), CancellationToken.None), Times.Once);
-        unitOfWorkMock.Verify(u => u.BeginTransactionAsync(CancellationToken.None), Times.Once);
-        unitOfWorkMock.Verify(u => u.CommitTransactionAsync(CancellationToken.None), Times.Once);
-        passwordHasherMock.Verify(p => p.Hash(command.Password), Times.Once);
-        userRepositoryMock.Verify(r => r.CreateAsync(It.IsAny<UserEntity>(), CancellationToken.None), Times.Once);
-
-        unitOfWorkMock.Verify(u => u.RollbackTransactionAsync(CancellationToken.None), Times.Once);
+        result.Data.Token.ShouldBe("mockedToken");
+        result.Data.ExpireAt.Value.ShouldBeGreaterThan(startDate);
+        result.Data.ExpireAt.Value.ShouldBeLessThan(endDate);
+        userRepositoryMock.Verify(x => x.GetUserByCpfAsync(It.IsAny<string>(), CancellationToken.None), Times.Once);
+        passwordHasherMock.Verify(x => x.Verify(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+        tokenServiceMock.Verify(x => x.GenerateToken(It.IsAny<UserEntity>(), It.IsAny<Dictionary<string, string>>()), Times.Once);
     }
 }

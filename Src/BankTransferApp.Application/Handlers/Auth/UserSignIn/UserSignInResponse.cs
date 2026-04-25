@@ -3,5 +3,5 @@
 public record UserSignInResponse
 {
     public string Token { get; init; }
-    public DateTime ExpireAt { get; init; }
+    public DateTime? ExpireAt { get; init; }
 }

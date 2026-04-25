@@ -10,13 +10,14 @@ namespace BankTransferApp.Application.Handlers.Auth.UserSignIn;
 
 public class UserSignInHandler(
     ILogger<UserSignInHandler> logger,
-    IUnitOfWork unitOfWork,
     IUserRepository userRepository,
     IPasswordHasher passwordHasher,
     ITokenService tokenService,
     IOptions<TokenOption> options) : IHandler<UserSignInCommand, Result<UserSignInResponse>>
 {
-    public async Task<Result<UserSignInResponse>> HandleAsync(UserSignInCommand request, CancellationToken cancellationToken)
+    public async Task<Result<UserSignInResponse>> HandleAsync(
+        UserSignInCommand request, 
+        CancellationToken cancellationToken)
     {
         UserSignInValidator validator = new();
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -48,7 +49,6 @@ public class UserSignInHandler(
         catch (Exception ex)
         {
             logger.LogError(ex, "An error occurred while processing UserSignInCommand.");
-            await unitOfWork.RollbackTransactionAsync(cancellationToken);
             throw;
         }
     }

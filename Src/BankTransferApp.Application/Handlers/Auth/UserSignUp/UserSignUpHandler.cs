@@ -12,7 +12,9 @@ public sealed class UserSignUpHandler(
     IUserRepository userRepository,
     IPasswordHasher passwordHasher) : IHandler<UserSignUpCommand, Result<Guid>>
 {
-    public async Task<Result<Guid>> HandleAsync(UserSignUpCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> HandleAsync(
+        UserSignUpCommand request, 
+        CancellationToken cancellationToken)
     {
         UserSignUpValidator validator = new();
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
