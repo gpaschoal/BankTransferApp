@@ -31,7 +31,7 @@ public class UserSignUpHandlerTests
         return new(name, cpf, address, cellphone, homePhone, password, passwordConfirmation);
     }
 
-    [TestMethod]
+    [TestMethod(DisplayName = "Should Return Validation Errors")]
     public async Task InvalidCommand_ShouldReturnValidationErrors()
     {
         var loggerMock = new Mock<ILogger<UserSignUpHandler>>();
@@ -58,7 +58,7 @@ public class UserSignUpHandlerTests
         userRepositoryMock.Verify(r => r.CreateAsync(It.IsAny<UserEntity>(), CancellationToken.None), Times.Never);
     }
 
-    [TestMethod]
+    [TestMethod(DisplayName = "Should Return CPF Already Exists Error")]
     public async Task InvalidCommand_ShouldReturnCpfAlreadyExistsError()
     {
         var loggerMock = new Mock<ILogger<UserSignUpHandler>>();
@@ -90,7 +90,7 @@ public class UserSignUpHandlerTests
         userRepositoryMock.Verify(r => r.CreateAsync(It.IsAny<UserEntity>(), CancellationToken.None), Times.Never);
     }
 
-    [TestMethod]
+    [TestMethod(DisplayName = "Should Register An User When Command Is Valid")]
     public async Task ValidCommand_ShouldRegisterAnUser()
     {
         var loggerMock = new Mock<ILogger<UserSignUpHandler>>();
@@ -123,7 +123,7 @@ public class UserSignUpHandlerTests
         unitOfWorkMock.Verify(u => u.RollbackTransactionAsync(CancellationToken.None), Times.Never);
     }
 
-    [TestMethod]
+    [TestMethod(DisplayName = "Should Rollback When Throws An Exception")]
     public async Task InvalidCommand_ShouldRollbackWhenThrowsAnException()
     {
         var loggerMock = new Mock<ILogger<UserSignUpHandler>>();

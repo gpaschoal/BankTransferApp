@@ -23,7 +23,7 @@ public class UserSignInHandlerTests
         return new(cpf, password);
     }
 
-    [TestMethod]
+    [TestMethod(DisplayName = "Should Return Validation Errors")]
     public async Task InvalidCommand_ShouldReturnValidationErrors()
     {
         var loggerMock = new Mock<ILogger<UserSignInHandler>>();
@@ -48,7 +48,7 @@ public class UserSignInHandlerTests
         tokenServiceMock.Verify(x => x.GenerateToken(It.IsAny<UserEntity>(), It.IsAny<Dictionary<string, string>>()), Times.Never);
     }
 
-    [TestMethod]
+    [TestMethod(DisplayName = "Should Return Invalid When Does Not Find User By CPF")]
     public async Task InvalidCommand_ShouldReturnInvalidWhenDoesNotFindUserByCPF()
     {
         var loggerMock = new Mock<ILogger<UserSignInHandler>>();
@@ -77,7 +77,7 @@ public class UserSignInHandlerTests
         tokenServiceMock.Verify(x => x.GenerateToken(It.IsAny<UserEntity>(), It.IsAny<Dictionary<string, string>>()), Times.Never);
     }
 
-    [TestMethod]
+    [TestMethod(DisplayName = "Should Return Invalid When Password Does Not Match")]
     public async Task InvalidCommand_ShouldReturnInvalidWhenPasswordDoesNotMatch()
     {
         var loggerMock = new Mock<ILogger<UserSignInHandler>>();
@@ -115,7 +115,7 @@ public class UserSignInHandlerTests
         tokenServiceMock.Verify(x => x.GenerateToken(It.IsAny<UserEntity>(), It.IsAny<Dictionary<string, string>>()), Times.Never);
     }
 
-    [TestMethod]
+    [TestMethod(DisplayName = "Should Return Token")]
     public async Task ValidCommand_ShouldReturnToken()
     {
         var loggerMock = new Mock<ILogger<UserSignInHandler>>();
