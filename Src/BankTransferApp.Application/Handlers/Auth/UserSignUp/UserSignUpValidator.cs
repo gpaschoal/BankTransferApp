@@ -3,7 +3,11 @@ using FluentValidation;
 
 namespace BankTransferApp.Application.Handlers.Auth.UserSignUp;
 
+<<<<<<<< HEAD:Src/BankTransferApp.Application/Handlers/Auth/UserSignUp/UserSignUpValidator.cs
 internal sealed class UserSignUpValidator : AbstractValidator<UserSignUpCommand>
+========
+internal sealed class UserSignInValidator : AbstractValidator<UserSignUpCommand>
+>>>>>>>> 2f95de9a5784a33b0cb5be51d01cf135a0aab462:Src/BankTransferApp.Application/Handlers/Auth/UserSignUp/UserSignInValidator.cs
 {
     public UserSignUpValidator()
     {
