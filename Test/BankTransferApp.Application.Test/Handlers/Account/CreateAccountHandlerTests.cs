@@ -1,5 +1,6 @@
 ﻿using BankTransferApp.Application.Handlers.Account.CreateAccount;
 using BankTransferApp.Application.Service;
+using BankTransferApp.Domain.Entities;
 using BankTransferApp.Domain.Enums;
 using BankTransferApp.Domain.Repositories;
 using BankTransferApp.Domain.Services;
@@ -39,7 +40,7 @@ public class CreateAccountHandlerTests
         userContextServiceMock.Verify(x => x.ThrownsIfUserNotLoggedIn(), Times.Never);
         userRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         unitOfWorkMock.Verify(x => x.BeginTransactionAsync(It.IsAny<CancellationToken>()), Times.Never);
-        accountRepositoryMock.Verify(x => x.AddAsync(It.IsAny<Domain.Entities.AccountEntity>(), It.IsAny<CancellationToken>()), Times.Never);
+        accountRepositoryMock.Verify(x => x.AddAsync(It.IsAny<AccountEntity>(), It.IsAny<CancellationToken>()), Times.Never);
         unitOfWorkMock.Verify(x => x.CommitTransactionAsync(It.IsAny<CancellationToken>()), Times.Never);
         unitOfWorkMock.Verify(x => x.RollbackTransactionAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
@@ -66,7 +67,7 @@ public class CreateAccountHandlerTests
 
         userRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         unitOfWorkMock.Verify(x => x.BeginTransactionAsync(It.IsAny<CancellationToken>()), Times.Never);
-        accountRepositoryMock.Verify(x => x.AddAsync(It.IsAny<Domain.Entities.AccountEntity>(), It.IsAny<CancellationToken>()), Times.Never);
+        accountRepositoryMock.Verify(x => x.AddAsync(It.IsAny<AccountEntity>(), It.IsAny<CancellationToken>()), Times.Never);
         unitOfWorkMock.Verify(x => x.CommitTransactionAsync(It.IsAny<CancellationToken>()), Times.Never);
         unitOfWorkMock.Verify(x => x.RollbackTransactionAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
@@ -91,7 +92,7 @@ public class CreateAccountHandlerTests
         CreateAccountCommand command = new(EAccountType.CurrentAccount);
 
         userRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Domain.Entities.UserEntity)null);
+            .ReturnsAsync((UserEntity)null);
 
         var result = await sut.HandleAsync(command, CancellationToken.None);
 
@@ -100,7 +101,41 @@ public class CreateAccountHandlerTests
 
         userRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
         unitOfWorkMock.Verify(x => x.BeginTransactionAsync(It.IsAny<CancellationToken>()), Times.Never);
-        accountRepositoryMock.Verify(x => x.AddAsync(It.IsAny<Domain.Entities.AccountEntity>(), It.IsAny<CancellationToken>()), Times.Never);
+        accountRepositoryMock.Verify(x => x.AddAsync(It.IsAny<AccountEntity>(), It.IsAny<CancellationToken>()), Times.Never);
+        unitOfWorkMock.Verify(x => x.CommitTransactionAsync(It.IsAny<CancellationToken>()), Times.Never);
+        unitOfWorkMock.Verify(x => x.RollbackTransactionAsync(It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [TestMethod(DisplayName = "Should Return An Invalid Result If User Is Not Active")]
+    public async Task InvalidCommand_ShouldReturnAnInvalidResultIfUserIsNotActive()
+    {
+        var loggerMock = new Mock<ILogger<CreateAccountHandler>>();
+        var accountRepositoryMock = new Mock<IAccountRepository>();
+        var userRepositoryMock = new Mock<IUserRepository>();
+        var unitOfWorkMock = new Mock<IUnitOfWork>();
+        var userContextService = new UserContextService();
+        userContextService.SetCurrentUserId(Guid.NewGuid());
+
+        var sut = new CreateAccountHandler(
+            loggerMock.Object,
+            accountRepositoryMock.Object,
+            userRepositoryMock.Object,
+            unitOfWorkMock.Object,
+            userContextService);
+
+        CreateAccountCommand command = new(EAccountType.CurrentAccount);
+
+        userRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new UserEntity { IsActive = false });
+
+        var result = await sut.HandleAsync(command, CancellationToken.None);
+
+        result.Errors.Single().Key.ShouldBe("InvalidUser");
+        result.Errors.Single().Value.Single().ShouldBe("User must be active to create an account!");
+
+        userRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
+        unitOfWorkMock.Verify(x => x.BeginTransactionAsync(It.IsAny<CancellationToken>()), Times.Never);
+        accountRepositoryMock.Verify(x => x.AddAsync(It.IsAny<AccountEntity>(), It.IsAny<CancellationToken>()), Times.Never);
         unitOfWorkMock.Verify(x => x.CommitTransactionAsync(It.IsAny<CancellationToken>()), Times.Never);
         unitOfWorkMock.Verify(x => x.RollbackTransactionAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
