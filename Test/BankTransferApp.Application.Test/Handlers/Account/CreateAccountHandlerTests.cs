@@ -172,7 +172,6 @@ public class CreateAccountHandlerTests
         unitOfWorkMock.Verify(x => x.RollbackTransactionAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
 
-
     [TestMethod(DisplayName = "Should Rollback If An Error Occurs While Creating An Account")]
     public async Task ValidCommand_ShouldRollbackIfHappensAnError()
     {

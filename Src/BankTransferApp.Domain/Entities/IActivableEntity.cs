@@ -3,6 +3,18 @@
 public interface IActivableEntity
 {
     bool IsActive { get; set; }
-    void InactiveAccount() => IsActive = false;
-    void ActiveAccount() => IsActive = true;
+}
+
+public static class ActivableEntityExtensions
+{
+    public static void Activate<T>(this T activableEntity)
+        where T : IActivableEntity
+    {
+        activableEntity.IsActive = true;
+    }
+    public static void Deactivate<T>(this T activableEntity)
+        where T : IActivableEntity
+    {
+        activableEntity.IsActive = false;
+    }
 }

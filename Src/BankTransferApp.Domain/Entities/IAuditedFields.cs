@@ -15,17 +15,20 @@ public interface IAuditedFields
 
 public static class AuditedFieldsExtensions
 {
-    public static void SetCreatedBy(this IAuditedFields auditedFields, Guid userId)
+    public static void SetCreatedBy<T>(this T auditedFields, Guid userId)
+        where T : IAuditedFields
     {
         auditedFields.CreatedById = userId;
         auditedFields.CreatedAt = DateTime.UtcNow;
     }
-    public static void SetModifiedBy(this IAuditedFields auditedFields, Guid userId)
+    public static void SetModifiedBy<T>(this T auditedFields, Guid userId) 
+        where T : IAuditedFields
     {
         auditedFields.ModifiedById = userId;
         auditedFields.ModifiedAt = DateTime.UtcNow;
     }
-    public static void SetDeletedBy(this IAuditedFields auditedFields, Guid userId)
+    public static void SetDeletedBy<T>(this T auditedFields, Guid userId)
+        where T : IAuditedFields
     {
         auditedFields.DeletedById = userId;
         auditedFields.DeletedAt = DateTime.UtcNow;
