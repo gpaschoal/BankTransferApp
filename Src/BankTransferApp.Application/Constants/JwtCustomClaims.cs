@@ -2,5 +2,5 @@
 
 public static class JwtCustomClaims
 {
-    public const string USER_IDENTIFIER = "UserIdentifier";
+    public const string USER_ID = "uid";
 }

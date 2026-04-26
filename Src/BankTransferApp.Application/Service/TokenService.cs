@@ -19,7 +19,7 @@ public sealed class TokenService(IOptions<TokenOption> options) : ITokenService
 
         var claimsList = new List<Claim>() {
             new(ClaimTypes.Name, user.Name.FullName),
-            new(JwtCustomClaims.USER_IDENTIFIER, user.Id.ToString())
+            new(JwtCustomClaims.USER_ID, user.Id.ToString())
         };
 
         foreach (var claim in claims)
@@ -33,6 +33,7 @@ public sealed class TokenService(IOptions<TokenOption> options) : ITokenService
             Subject = new ClaimsIdentity(claimsList),
             Expires = DateTime.UtcNow.AddHours(tokenOptions.ExpirationInHours),
             Issuer = tokenOptions.Issuer,
+            Audience= tokenOptions.Issuer,
             SigningCredentials = new(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
 

@@ -12,12 +12,10 @@ public class UserContextMiddleware(RequestDelegate next)
 
         var identity = (ClaimsIdentity)user.Identity;
 
-        var userIdClaim = identity?.Claims?.SingleOrDefault(x => x.Type == JwtCustomClaims.USER_IDENTIFIER);
+        var userIdClaim = identity?.Claims?.SingleOrDefault(x => x.Type == JwtCustomClaims.USER_ID);
 
         if (!string.IsNullOrWhiteSpace(userIdClaim?.Value))
-        {
             userContext.SetCurrentUserId(Guid.Parse(userIdClaim.Value));
-        }
 
         await next(context);
     }

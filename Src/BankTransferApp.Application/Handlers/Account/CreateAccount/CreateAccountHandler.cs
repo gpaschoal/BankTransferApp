@@ -21,9 +21,9 @@ public class CreateAccountHandler(
     {
         CreateAccountValidator validator = new();
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
-        if (validationResult.IsValid) return validationResult.ToResult<Guid>();
+        if (!validationResult.IsValid) return validationResult.ToResult<Guid>();
 
-        userContextService.TrownsIfUserNotLoggedIn();
+        userContextService.ThrownsIfUserNotLoggedIn();
 
         try
         {

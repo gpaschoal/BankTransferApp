@@ -6,8 +6,9 @@ public interface IUserContextService
     public Guid? CurrentUserId { get; }
     void SetCurrentUserId(Guid userId);
 
-    public void TrownsIfUserNotLoggedIn()
+    public void ThrownsIfUserNotLoggedIn()
     {
-        if (!IsLoggedIn) throw new InvalidOperationException("User is not logged in.");
+        if (!IsLoggedIn) 
+            throw new InvalidOperationException("User is not logged in.");
     }
 }

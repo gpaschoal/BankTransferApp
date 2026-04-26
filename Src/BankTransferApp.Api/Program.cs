@@ -20,14 +20,12 @@ app.MapScalarApiReference(options =>
     options.Theme = ScalarTheme.Moon;
 });
 
-app.UseMiddleware<UserContextMiddleware>();
-
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
 
 app.MapControllers();
 
 app.MapJwtAuthorization();
+
+app.UseMiddleware<UserContextMiddleware>();
 
 await app.RunAsync();

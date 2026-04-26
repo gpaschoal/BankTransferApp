@@ -5,13 +5,13 @@ public enum EAccountType
     /// <summary>
     ///  Conta corrente
     /// </summary>
-    CurrentAccount,
+    CurrentAccount = 1,
     /// <summary>
     ///  Conta poupança
     /// </summary>
-    SavingsAccount,
+    SavingsAccount = 2,
     /// <summary>
     ///  Conta salário
     /// </summary>
-    PayrollAccount
+    PayrollAccount = 3
 }
