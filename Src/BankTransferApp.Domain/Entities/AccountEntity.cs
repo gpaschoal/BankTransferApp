@@ -20,4 +20,20 @@ public class AccountEntity : IEntity, IAuditedFields, IActivableEntity
     public DateTime? DeletedAt { get; set; }
     public Guid? DeletedById { get; set; }
     public UserEntity DeletedBy { get; set; }
+
+    public static AccountEntity Create(Guid ownerId, EAccountType accountType, Guid createdById)
+    {
+        AccountEntity accountEntity = new()
+        {
+            Id = Guid.CreateVersion7(),
+            OwnerId = ownerId,
+            Balance = 0,
+            IsActive = true,
+            AccountType = accountType
+        };
+
+        accountEntity.SetCreatedBy(createdById);
+
+        return accountEntity;
+    }
 }

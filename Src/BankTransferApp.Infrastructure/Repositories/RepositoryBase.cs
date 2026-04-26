@@ -9,7 +9,7 @@ public abstract class RepositoryBase<T>(AppDbContext dbContext) : IRepository<T>
 {
     protected DbSet<T> Queryable => dbContext.Set<T>();
 
-    public async Task CreateAsync(T entity, CancellationToken cancellationToken)
+    public async Task AddAsync(T entity, CancellationToken cancellationToken)
     {
         await Queryable.AddAsync(entity, cancellationToken);
     }

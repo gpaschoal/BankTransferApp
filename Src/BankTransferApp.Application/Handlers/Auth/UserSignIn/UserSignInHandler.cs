@@ -21,8 +21,7 @@ public class UserSignInHandler(
     {
         UserSignInValidator validator = new();
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
-
-        if (!validationResult.IsValid) return validationResult.FromValidator<Result<UserSignInResponse>>();
+        if (!validationResult.IsValid) return validationResult.ToResult<UserSignInResponse>();
 
         try
         {

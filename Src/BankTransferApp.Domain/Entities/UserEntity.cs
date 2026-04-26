@@ -32,7 +32,7 @@ public class UserEntity : IEntity, IAuditedFields, IActivableEntity
         PasswordValueObject password)
     {
         var id = Guid.NewGuid();
-        return new UserEntity
+        UserEntity userEntity = new()
         {
             Id = id,
             Name = name,
@@ -41,9 +41,11 @@ public class UserEntity : IEntity, IAuditedFields, IActivableEntity
             Cellphone = cellphone,
             HomePhone = homePhone,
             Password = password,
-            CreatedById = id,
-            CreatedAt = DateTime.UtcNow,
             IsActive = true
         };
+
+        userEntity.SetCreatedBy(id);
+
+        return userEntity;
     }
 }

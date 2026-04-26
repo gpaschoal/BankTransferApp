@@ -55,7 +55,7 @@ public class UserSignUpHandlerTests
         unitOfWorkMock.Verify(u => u.CommitTransactionAsync(CancellationToken.None), Times.Never);
         unitOfWorkMock.Verify(u => u.RollbackTransactionAsync(CancellationToken.None), Times.Never);
         passwordHasherMock.Verify(p => p.Hash(It.IsAny<string>()), Times.Never);
-        userRepositoryMock.Verify(r => r.CreateAsync(It.IsAny<UserEntity>(), CancellationToken.None), Times.Never);
+        userRepositoryMock.Verify(r => r.AddAsync(It.IsAny<UserEntity>(), CancellationToken.None), Times.Never);
     }
 
     [TestMethod(DisplayName = "Should Return CPF Already Exists Error")]
@@ -87,7 +87,7 @@ public class UserSignUpHandlerTests
         unitOfWorkMock.Verify(u => u.CommitTransactionAsync(CancellationToken.None), Times.Never);
         unitOfWorkMock.Verify(u => u.RollbackTransactionAsync(CancellationToken.None), Times.Never);
         passwordHasherMock.Verify(p => p.Hash(It.IsAny<string>()), Times.Never);
-        userRepositoryMock.Verify(r => r.CreateAsync(It.IsAny<UserEntity>(), CancellationToken.None), Times.Never);
+        userRepositoryMock.Verify(r => r.AddAsync(It.IsAny<UserEntity>(), CancellationToken.None), Times.Never);
     }
 
     [TestMethod(DisplayName = "Should Register An User When Command Is Valid")]
@@ -118,7 +118,7 @@ public class UserSignUpHandlerTests
         unitOfWorkMock.Verify(u => u.BeginTransactionAsync(CancellationToken.None), Times.Once);
         unitOfWorkMock.Verify(u => u.CommitTransactionAsync(CancellationToken.None), Times.Once);
         passwordHasherMock.Verify(p => p.Hash(command.Password), Times.Once);
-        userRepositoryMock.Verify(r => r.CreateAsync(It.IsAny<UserEntity>(), CancellationToken.None), Times.Once);
+        userRepositoryMock.Verify(r => r.AddAsync(It.IsAny<UserEntity>(), CancellationToken.None), Times.Once);
 
         unitOfWorkMock.Verify(u => u.RollbackTransactionAsync(CancellationToken.None), Times.Never);
     }
@@ -154,7 +154,7 @@ public class UserSignUpHandlerTests
         unitOfWorkMock.Verify(u => u.BeginTransactionAsync(CancellationToken.None), Times.Once);
         unitOfWorkMock.Verify(u => u.CommitTransactionAsync(CancellationToken.None), Times.Once);
         passwordHasherMock.Verify(p => p.Hash(command.Password), Times.Once);
-        userRepositoryMock.Verify(r => r.CreateAsync(It.IsAny<UserEntity>(), CancellationToken.None), Times.Once);
+        userRepositoryMock.Verify(r => r.AddAsync(It.IsAny<UserEntity>(), CancellationToken.None), Times.Once);
 
         unitOfWorkMock.Verify(u => u.RollbackTransactionAsync(CancellationToken.None), Times.Once);
     }

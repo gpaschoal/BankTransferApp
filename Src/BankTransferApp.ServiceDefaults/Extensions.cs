@@ -29,7 +29,9 @@ public static class Extensions
 
         builder.AddDefaultHealthChecks();
 
-        builder.Services.AddServiceDiscovery();
+        builder.Services.AddServiceDiscovery(); 
+        
+        builder.Services.AddHttpContextAccessor();
 
         builder.Services.ConfigureHttpClientDefaults(http =>
         {

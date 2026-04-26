@@ -9,7 +9,7 @@ namespace BankTransferApp.Api.Controllers;
 [ApiController]
 [Route("api/v1/[controller]")]
 [Produces("application/json")]
-public class AuthenticationController : Controller
+public class AuthenticationController : ControllerBase
 {
     [AllowAnonymous]
     [HttpPost]
@@ -24,10 +24,7 @@ public class AuthenticationController : Controller
     {
         var response = await handler.HandleAsync(command, cancellationToken);
 
-        if (response.IsValid)
-        {
-            return Ok(response);
-        }
+        if (response.IsValid) return Ok(response);
 
         return BadRequest(response);
     }
@@ -45,10 +42,7 @@ public class AuthenticationController : Controller
     {
         var response = await handler.HandleAsync(command, cancellationToken);
 
-        if (response.IsValid)
-        {
-            return Ok(response);
-        }
+        if (response.IsValid) return Ok(response);
 
         return BadRequest(response);
     }

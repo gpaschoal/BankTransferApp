@@ -1,4 +1,6 @@
-﻿namespace BankTransferApp.Domain.Handlers;
+﻿using System.Text.Json.Serialization;
+
+namespace BankTransferApp.Domain.Handlers;
 
 public class Result
 {
@@ -14,6 +16,7 @@ public class Result
         AddError(key, errorMessage);
     }
 
+    [JsonIgnore]
     public bool IsValid => !_errors.Any();
 
     public IReadOnlyDictionary<string, IList<string>> Errors => _errors.ToDictionary(kv => kv.Key, kv => kv.Value);

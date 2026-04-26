@@ -15,7 +15,7 @@ public class AccountMapping : IEntityTypeConfiguration<AccountEntity>
         builder.HasOne(x => x.Owner).WithMany(x => x.Accounts)
             .HasForeignKey(x => x.OwnerId).OnDelete(DeleteBehavior.NoAction);
 
-        builder.Property(x => x.AccountNumber).IsRequired().HasColumnName("AccountNumber");
+        builder.Property(x => x.AccountNumber).IsRequired().HasColumnName("AccountNumber").ValueGeneratedOnAdd();
 
         builder.Property(x => x.Balance).IsRequired().HasColumnName("Balance");
 

@@ -12,3 +12,22 @@ public interface IAuditedFields
     public Guid? DeletedById { get; set; }
     public UserEntity DeletedBy { get; set; }
 }
+
+public static class AuditedFieldsExtensions
+{
+    public static void SetCreatedBy(this IAuditedFields auditedFields, Guid userId)
+    {
+        auditedFields.CreatedById = userId;
+        auditedFields.CreatedAt = DateTime.UtcNow;
+    }
+    public static void SetModifiedBy(this IAuditedFields auditedFields, Guid userId)
+    {
+        auditedFields.ModifiedById = userId;
+        auditedFields.ModifiedAt = DateTime.UtcNow;
+    }
+    public static void SetDeletedBy(this IAuditedFields auditedFields, Guid userId)
+    {
+        auditedFields.DeletedById = userId;
+        auditedFields.DeletedAt = DateTime.UtcNow;
+    }
+}

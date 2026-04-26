@@ -19,10 +19,7 @@ public sealed class UserSignUpHandler(
         UserSignUpValidator validator = new();
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
-        if (!validationResult.IsValid)
-        {
-            return validationResult.FromValidator<Result<Guid>>();
-        }
+        if (!validationResult.IsValid) return validationResult.ToResult<Guid>();
 
         try
         {
@@ -36,7 +33,7 @@ public sealed class UserSignUpHandler(
 
             var user = request.ToEntity(hashedPassword);
 
-            await userRepository.CreateAsync(user, cancellationToken);
+            await userRepository.AddAsync(user, cancellationToken);
 
             await unitOfWork.CommitTransactionAsync(cancellationToken);
 
