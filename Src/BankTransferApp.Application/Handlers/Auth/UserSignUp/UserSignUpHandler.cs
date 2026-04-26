@@ -13,7 +13,7 @@ public sealed class UserSignUpHandler(
     IPasswordHasher passwordHasher) : IHandler<UserSignUpCommand, Result<Guid>>
 {
     public async Task<Result<Guid>> HandleAsync(
-        UserSignUpCommand request, 
+        UserSignUpCommand request,
         CancellationToken cancellationToken)
     {
         UserSignUpValidator validator = new();

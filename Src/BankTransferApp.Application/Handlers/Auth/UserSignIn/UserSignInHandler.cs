@@ -16,7 +16,7 @@ public class UserSignInHandler(
     IOptions<TokenOption> options) : IHandler<UserSignInCommand, Result<UserSignInResponse>>
 {
     public async Task<Result<UserSignInResponse>> HandleAsync(
-        UserSignInCommand request, 
+        UserSignInCommand request,
         CancellationToken cancellationToken)
     {
         UserSignInValidator validator = new();
@@ -29,9 +29,9 @@ public class UserSignInHandler(
             var tokenOptions = options.Value;
 
             var user = await userRepository.GetUserByCpfAsync(request.Cpf, cancellationToken);
-            
+
             if (user is null) return new("Authentication", "Invalid CPF or password.");
-            
+
             var isPasswordValid = passwordHasher.Verify(request.Password, user.Password.Value);
 
             if (!isPasswordValid) return new("Authentication", "Invalid CPF or password.");

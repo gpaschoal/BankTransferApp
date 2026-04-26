@@ -8,7 +8,7 @@ It allows users to manage bank accounts, perform transactions, and transfer fund
 ## Features
 
 ### User Management
-- [ ] User registration and authentication
+- [x] User registration and authentication
 
 ### Bank Accounts
 - [ ] Create a new bank account  

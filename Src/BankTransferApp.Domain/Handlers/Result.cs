@@ -35,7 +35,7 @@ public class Result<T>
         Data = new T();
     }
 
-    public Result(T data): base()
+    public Result(T data) : base()
     {
         Data = data;
     }

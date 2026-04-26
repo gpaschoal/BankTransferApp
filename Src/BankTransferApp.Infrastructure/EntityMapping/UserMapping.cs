@@ -47,5 +47,9 @@ public class UserMapping : IEntityTypeConfiguration<UserEntity>
         {
             x.Property(p => p.Value).HasColumnName("Password").HasColumnType("varchar").IsRequired();
         });
+
+        EFMappingsHelpers.MapAuditFields(builder);
+
+        EFMappingsHelpers.MapActivableFields(builder);
     }
 }

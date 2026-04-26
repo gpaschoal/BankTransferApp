@@ -42,6 +42,7 @@ public class UserEntity : IEntity, IAuditedFields, IActivableEntity
             HomePhone = homePhone,
             Password = password,
             CreatedById = id,
+            CreatedAt = DateTime.UtcNow,
             IsActive = true
         };
     }
