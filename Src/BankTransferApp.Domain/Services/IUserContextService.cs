@@ -8,7 +8,7 @@ public interface IUserContextService
 
     public void ThrownsIfUserNotLoggedIn()
     {
-        if (!IsLoggedIn) 
+        if (!IsLoggedIn)
             throw new InvalidOperationException("User is not logged in.");
     }
 }

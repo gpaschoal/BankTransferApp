@@ -33,7 +33,7 @@ public sealed class TokenService(IOptions<TokenOption> options) : ITokenService
             Subject = new ClaimsIdentity(claimsList),
             Expires = DateTime.UtcNow.AddHours(tokenOptions.ExpirationInHours),
             Issuer = tokenOptions.Issuer,
-            Audience= tokenOptions.Issuer,
+            Audience = tokenOptions.Issuer,
             SigningCredentials = new(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
 

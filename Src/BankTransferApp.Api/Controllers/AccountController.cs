@@ -1,4 +1,5 @@
-﻿using BankTransferApp.Application.Handlers.Account.CreateAccount;
+﻿using BankTransferApp.Application.Handlers.Account.ActivateAccount;
+using BankTransferApp.Application.Handlers.Account.CreateAccount;
 using BankTransferApp.Application.Handlers.Account.DeactivateAccount;
 using BankTransferApp.Domain.Handlers;
 using Microsoft.AspNetCore.Authorization;
@@ -34,6 +35,21 @@ public class AccountController : ControllerBase
     public async Task<IActionResult> DeactivateAccount(
         [FromServices] DeactivateAccountHandler handler,
         [FromBody] DeactivateAccountCommand command,
+        CancellationToken cancellationToken)
+    {
+        var response = await handler.HandleAsync(command, cancellationToken);
+        if (response.IsValid) return Ok(response);
+        return BadRequest(response);
+    }
+
+    [Authorize]
+    [HttpPost("Activate")]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ActivateAccount(
+        [FromServices] ActivateAccountHandler handler,
+        [FromBody] ActivateAccountCommand command,
         CancellationToken cancellationToken)
     {
         var response = await handler.HandleAsync(command, cancellationToken);

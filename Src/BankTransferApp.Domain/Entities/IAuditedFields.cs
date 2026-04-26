@@ -21,7 +21,7 @@ public static class AuditedFieldsExtensions
         auditedFields.CreatedById = userId;
         auditedFields.CreatedAt = DateTime.UtcNow;
     }
-    public static void SetModifiedBy<T>(this T auditedFields, Guid userId) 
+    public static void SetModifiedBy<T>(this T auditedFields, Guid userId)
         where T : IAuditedFields
     {
         auditedFields.ModifiedById = userId;
