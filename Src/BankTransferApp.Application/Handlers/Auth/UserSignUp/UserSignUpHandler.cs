@@ -10,7 +10,7 @@ public sealed class UserSignUpHandler(
     ILogger<UserSignUpHandler> logger,
     IUnitOfWork unitOfWork,
     IUserRepository userRepository,
-    IPasswordHasher passwordHasher) : IHandler<UserSignUpCommand, Result<Guid>>
+    IPasswordHasherService passwordHasher) : IHandler<UserSignUpCommand, Result<Guid>>
 {
     public async Task<Result<Guid>> HandleAsync(
         UserSignUpCommand request,

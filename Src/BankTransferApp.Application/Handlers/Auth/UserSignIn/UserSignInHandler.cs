@@ -11,7 +11,7 @@ namespace BankTransferApp.Application.Handlers.Auth.UserSignIn;
 public class UserSignInHandler(
     ILogger<UserSignInHandler> logger,
     IUserRepository userRepository,
-    IPasswordHasher passwordHasher,
+    IPasswordHasherService passwordHasher,
     ITokenService tokenService,
     IOptions<TokenOption> options) : IHandler<UserSignInCommand, Result<UserSignInResponse>>
 {

@@ -1,6 +1,6 @@
 ﻿namespace BankTransferApp.Domain.Services;
 
-public interface IPasswordHasher
+public interface IPasswordHasherService
 {
     string Hash(string password);
 

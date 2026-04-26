@@ -2,7 +2,7 @@
 
 namespace BankTransferApp.Application.Service;
 
-public class PasswordHasher : IPasswordHasher
+public class PasswordHasherService : IPasswordHasherService
 {
     public string Hash(string password) => BCrypt.Net.BCrypt.HashPassword(password);
 

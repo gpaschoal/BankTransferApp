@@ -37,7 +37,7 @@ public class UserSignUpHandlerTests
         var loggerMock = new Mock<ILogger<UserSignUpHandler>>();
         var unitOfWorkMock = new Mock<IUnitOfWork>();
         var userRepositoryMock = new Mock<IUserRepository>();
-        var passwordHasherMock = new Mock<IPasswordHasher>();
+        var passwordHasherMock = new Mock<IPasswordHasherService>();
 
         var sut = new UserSignUpHandler(
                             logger: loggerMock.Object,
@@ -64,7 +64,7 @@ public class UserSignUpHandlerTests
         var loggerMock = new Mock<ILogger<UserSignUpHandler>>();
         var unitOfWorkMock = new Mock<IUnitOfWork>();
         var userRepositoryMock = new Mock<IUserRepository>();
-        var passwordHasherMock = new Mock<IPasswordHasher>();
+        var passwordHasherMock = new Mock<IPasswordHasherService>();
 
         var command = MakeValidCommand();
 
@@ -96,7 +96,7 @@ public class UserSignUpHandlerTests
         var loggerMock = new Mock<ILogger<UserSignUpHandler>>();
         var unitOfWorkMock = new Mock<IUnitOfWork>();
         var userRepositoryMock = new Mock<IUserRepository>();
-        var passwordHasherMock = new Mock<IPasswordHasher>();
+        var passwordHasherMock = new Mock<IPasswordHasherService>();
 
         var command = MakeValidCommand();
 
@@ -129,7 +129,7 @@ public class UserSignUpHandlerTests
         var loggerMock = new Mock<ILogger<UserSignUpHandler>>();
         var unitOfWorkMock = new Mock<IUnitOfWork>();
         var userRepositoryMock = new Mock<IUserRepository>();
-        var passwordHasherMock = new Mock<IPasswordHasher>();
+        var passwordHasherMock = new Mock<IPasswordHasherService>();
 
         var command = MakeValidCommand();
 

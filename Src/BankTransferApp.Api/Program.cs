@@ -1,3 +1,4 @@
+using BankTransferApp.Api.Middlewares;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,9 @@ app.MapScalarApiReference(options =>
 {
     options.Theme = ScalarTheme.Moon;
 });
+
+app.UseMiddleware<UserContextMiddleware>();
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
@@ -26,4 +30,4 @@ app.MapControllers();
 
 app.MapJwtAuthorization();
 
-app.Run();
+await app.RunAsync();

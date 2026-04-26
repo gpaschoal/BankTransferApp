@@ -28,7 +28,7 @@ public class UserSignInHandlerTests
     {
         var loggerMock = new Mock<ILogger<UserSignInHandler>>();
         var userRepositoryMock = new Mock<IUserRepository>();
-        var passwordHasherMock = new Mock<IPasswordHasher>();
+        var passwordHasherMock = new Mock<IPasswordHasherService>();
         var tokenServiceMock = new Mock<ITokenService>();
         var tokenOptionMock = new Mock<IOptions<TokenOption>>();
 
@@ -53,7 +53,7 @@ public class UserSignInHandlerTests
     {
         var loggerMock = new Mock<ILogger<UserSignInHandler>>();
         var userRepositoryMock = new Mock<IUserRepository>();
-        var passwordHasherMock = new Mock<IPasswordHasher>();
+        var passwordHasherMock = new Mock<IPasswordHasherService>();
         var tokenServiceMock = new Mock<ITokenService>();
         var tokenOptionMock = new Mock<IOptions<TokenOption>>();
 
@@ -82,7 +82,7 @@ public class UserSignInHandlerTests
     {
         var loggerMock = new Mock<ILogger<UserSignInHandler>>();
         var userRepositoryMock = new Mock<IUserRepository>();
-        var passwordHasherMock = new Mock<IPasswordHasher>();
+        var passwordHasherMock = new Mock<IPasswordHasherService>();
         var tokenServiceMock = new Mock<ITokenService>();
         var tokenOptionMock = new Mock<IOptions<TokenOption>>();
         var userEntity = UserEntity.Create(
@@ -120,7 +120,7 @@ public class UserSignInHandlerTests
     {
         var loggerMock = new Mock<ILogger<UserSignInHandler>>();
         var userRepositoryMock = new Mock<IUserRepository>();
-        var passwordHasherMock = new Mock<IPasswordHasher>();
+        var passwordHasherMock = new Mock<IPasswordHasherService>();
         var tokenServiceMock = new Mock<ITokenService>();
         var tokenOptionMock = new Mock<IOptions<TokenOption>>();
         var userEntity = UserEntity.Create(

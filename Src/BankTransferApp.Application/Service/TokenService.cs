@@ -1,4 +1,5 @@
-﻿using BankTransferApp.Application.Shared.Options;
+﻿using BankTransferApp.Application.Constants;
+using BankTransferApp.Application.Shared.Options;
 using BankTransferApp.Domain.Entities;
 using BankTransferApp.Domain.Services;
 using Microsoft.Extensions.Options;
@@ -18,7 +19,7 @@ public sealed class TokenService(IOptions<TokenOption> options) : ITokenService
 
         var claimsList = new List<Claim>() {
             new(ClaimTypes.Name, user.Name.FullName),
-            new(ClaimTypes.NameIdentifier, user.Id.ToString())
+            new(JwtCustomClaims.USER_IDENTIFIER, user.Id.ToString())
         };
 
         foreach (var claim in claims)

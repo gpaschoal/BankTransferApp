@@ -14,7 +14,8 @@ public static class IoCApplication
         services.AddScoped<UserSignUpHandler>();
         services.AddScoped<UserSignInHandler>();
 
-        services.AddScoped<IPasswordHasher, PasswordHasher>();
+        services.AddScoped<IPasswordHasherService, PasswordHasherService>();
         services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<IUserContextService, UserContextService>();
     }
 }
