@@ -139,4 +139,72 @@ public class CreateAccountHandlerTests
         unitOfWorkMock.Verify(x => x.CommitTransactionAsync(It.IsAny<CancellationToken>()), Times.Never);
         unitOfWorkMock.Verify(x => x.RollbackTransactionAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
+
+    [TestMethod(DisplayName = "Should Create An Account If User Is Active")]
+    public async Task ValidCommand_ShouldCreateAnAccount()
+    {
+        var loggerMock = new Mock<ILogger<CreateAccountHandler>>();
+        var accountRepositoryMock = new Mock<IAccountRepository>();
+        var userRepositoryMock = new Mock<IUserRepository>();
+        var unitOfWorkMock = new Mock<IUnitOfWork>();
+        var userContextService = new UserContextService();
+        userContextService.SetCurrentUserId(Guid.NewGuid());
+
+        var sut = new CreateAccountHandler(
+            loggerMock.Object,
+            accountRepositoryMock.Object,
+            userRepositoryMock.Object,
+            unitOfWorkMock.Object,
+            userContextService);
+
+        CreateAccountCommand command = new(EAccountType.CurrentAccount);
+
+        userRepositoryMock.Setup(x => x.GetByIdAsync(userContextService.CurrentUserId.Value, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new UserEntity { IsActive = true });
+
+        var result = await sut.HandleAsync(command, CancellationToken.None);
+
+        result.Errors.ShouldBeEmpty();
+        userRepositoryMock.Verify(x => x.GetByIdAsync(userContextService.CurrentUserId.Value, It.IsAny<CancellationToken>()), Times.Once);
+        unitOfWorkMock.Verify(x => x.BeginTransactionAsync(It.IsAny<CancellationToken>()), Times.Once);
+        accountRepositoryMock.Verify(x => x.AddAsync(It.IsAny<AccountEntity>(), It.IsAny<CancellationToken>()), Times.Once);
+        unitOfWorkMock.Verify(x => x.CommitTransactionAsync(It.IsAny<CancellationToken>()), Times.Once);
+        unitOfWorkMock.Verify(x => x.RollbackTransactionAsync(It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+
+    [TestMethod(DisplayName = "Should Rollback If An Error Occurs While Creating An Account")]
+    public async Task ValidCommand_ShouldRollbackIfHappensAnError()
+    {
+        var loggerMock = new Mock<ILogger<CreateAccountHandler>>();
+        var accountRepositoryMock = new Mock<IAccountRepository>();
+        var userRepositoryMock = new Mock<IUserRepository>();
+        var unitOfWorkMock = new Mock<IUnitOfWork>();
+        var userContextService = new UserContextService();
+        userContextService.SetCurrentUserId(Guid.NewGuid());
+
+        var sut = new CreateAccountHandler(
+            loggerMock.Object,
+            accountRepositoryMock.Object,
+            userRepositoryMock.Object,
+            unitOfWorkMock.Object,
+            userContextService);
+
+        CreateAccountCommand command = new(EAccountType.CurrentAccount);
+
+        userRepositoryMock.Setup(x => x.GetByIdAsync(userContextService.CurrentUserId.Value, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new UserEntity { IsActive = true });
+
+        unitOfWorkMock.Setup(x => x.CommitTransactionAsync(It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new Exception("Database error"));
+
+        await sut.HandleAsync(command, CancellationToken.None)
+            .ShouldThrowAsync<Exception>();
+
+        userRepositoryMock.Verify(x => x.GetByIdAsync(userContextService.CurrentUserId.Value, It.IsAny<CancellationToken>()), Times.Once);
+        unitOfWorkMock.Verify(x => x.BeginTransactionAsync(It.IsAny<CancellationToken>()), Times.Once);
+        accountRepositoryMock.Verify(x => x.AddAsync(It.IsAny<AccountEntity>(), It.IsAny<CancellationToken>()), Times.Once);
+        unitOfWorkMock.Verify(x => x.CommitTransactionAsync(It.IsAny<CancellationToken>()), Times.Once);
+        unitOfWorkMock.Verify(x => x.RollbackTransactionAsync(It.IsAny<CancellationToken>()), Times.Once);
+    }
 }
