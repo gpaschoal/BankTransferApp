@@ -47,7 +47,6 @@ public class CreateAccountHandlerTests
     [TestMethod(DisplayName = "Should Thrown An Exception If User Is Not Logged In")]
     public async Task InvalidCommand_ShouldThrownAnExceptionIfUserIsNotLoggedIn()
     {
-
         var loggerMock = new Mock<ILogger<CreateAccountHandler>>();
         var accountRepositoryMock = new Mock<IAccountRepository>();
         var userRepositoryMock = new Mock<IUserRepository>();
@@ -66,6 +65,40 @@ public class CreateAccountHandlerTests
         await sut.HandleAsync(command, CancellationToken.None).ShouldThrowAsync<InvalidOperationException>();
 
         userRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        unitOfWorkMock.Verify(x => x.BeginTransactionAsync(It.IsAny<CancellationToken>()), Times.Never);
+        accountRepositoryMock.Verify(x => x.AddAsync(It.IsAny<Domain.Entities.AccountEntity>(), It.IsAny<CancellationToken>()), Times.Never);
+        unitOfWorkMock.Verify(x => x.CommitTransactionAsync(It.IsAny<CancellationToken>()), Times.Never);
+        unitOfWorkMock.Verify(x => x.RollbackTransactionAsync(It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [TestMethod(DisplayName = "Should Return An Invalid Result If User Not Found")]
+    public async Task InvalidCommand_ShouldReturnAnInvalidResultIfUserNotFound()
+    {
+        var loggerMock = new Mock<ILogger<CreateAccountHandler>>();
+        var accountRepositoryMock = new Mock<IAccountRepository>();
+        var userRepositoryMock = new Mock<IUserRepository>();
+        var unitOfWorkMock = new Mock<IUnitOfWork>();
+        var userContextService = new UserContextService();
+        userContextService.SetCurrentUserId(Guid.NewGuid());
+
+        var sut = new CreateAccountHandler(
+            loggerMock.Object,
+            accountRepositoryMock.Object,
+            userRepositoryMock.Object,
+            unitOfWorkMock.Object,
+            userContextService);
+
+        CreateAccountCommand command = new(EAccountType.CurrentAccount);
+
+        userRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((Domain.Entities.UserEntity)null);
+
+        var result = await sut.HandleAsync(command, CancellationToken.None);
+
+        result.Errors.Single().Key.ShouldBe("InvalidUser");
+        result.Errors.Single().Value.Single().ShouldBe("User not found!");
+
+        userRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
         unitOfWorkMock.Verify(x => x.BeginTransactionAsync(It.IsAny<CancellationToken>()), Times.Never);
         accountRepositoryMock.Verify(x => x.AddAsync(It.IsAny<Domain.Entities.AccountEntity>(), It.IsAny<CancellationToken>()), Times.Never);
         unitOfWorkMock.Verify(x => x.CommitTransactionAsync(It.IsAny<CancellationToken>()), Times.Never);
