@@ -28,9 +28,14 @@ public class WithdrawMoneyHandler(
 
         try
         {
-            var accountExists = await accountRepository.ExistsAsync(request.AccountId, cancellationToken);
+            var account = await accountRepository.GetByIdAsync(request.AccountId, cancellationToken);
 
-            if (!accountExists) return new("AccountNotFound", "The specified account does not exist.");
+            if (account is null) return new("AccountNotFound", "The specified account does not exist.");
+
+            if (account.OwnerId != userContextService.CurrentUserId.Value)
+                return new("Unauthorized", "You do not have permission to perform this action on the specified account.");
+
+            if (!account.IsActive) return new("AccountInactive", "The specified account is inactive.");
 
             await unitOfWork.BeginTransactionAsync(cancellationToken);
 
@@ -44,7 +49,7 @@ public class WithdrawMoneyHandler(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "An error occurred while processing DepositMoneyCommand.");
+            logger.LogError(ex, "An error occurred while processing WithdrawMoneyCommand.");
             await unitOfWork.RollbackTransactionAsync(cancellationToken);
             throw;
         }
