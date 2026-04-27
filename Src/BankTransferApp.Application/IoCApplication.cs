@@ -4,6 +4,7 @@ using BankTransferApp.Application.Handlers.Account.DeactivateAccount;
 using BankTransferApp.Application.Handlers.Auth.UserSignIn;
 using BankTransferApp.Application.Handlers.Auth.UserSignUp;
 using BankTransferApp.Application.Handlers.Transactions.DepositMoney;
+using BankTransferApp.Application.Handlers.Transactions.TransferMoney;
 using BankTransferApp.Application.Handlers.Transactions.WithdrawMoney;
 using BankTransferApp.Application.Service;
 using BankTransferApp.Domain.Services;
@@ -24,9 +25,13 @@ public static class IoCApplication
         services.AddScoped<CreateAccountHandler>();
         services.AddScoped<DeactivateAccountHandler>();
         services.AddScoped<ActivateAccountHandler>();
+
+        // Transaction
         services.AddScoped<DepositMoneyHandler>();
         services.AddScoped<WithdrawMoneyHandler>();
+        services.AddScoped<TransferMoneyHandler>();
 
+        // Services
         services.AddScoped<IPasswordHasherService, PasswordHasherService>();
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IUserContextService, UserContextService>();
