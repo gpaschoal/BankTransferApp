@@ -9,4 +9,19 @@ public class DepositEntity : IEntity
     public AccountEntity Account { get; set; }
     public Guid TransactionId { get; set; }
     public TransactionEntity Transaction { get; set; }
+
+    public static DepositEntity Create(
+        decimal value,
+        Guid accountId,
+        Guid transactionId)
+    {
+        return new DepositEntity
+        {
+            Id = Guid.CreateVersion7(),
+            Value = value,
+            Reference = DateTime.UtcNow,
+            AccountId = accountId,
+            TransactionId = transactionId
+        };
+    }
 }

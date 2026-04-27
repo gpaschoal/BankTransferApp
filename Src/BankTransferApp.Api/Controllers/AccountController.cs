@@ -29,7 +29,7 @@ public class AccountController : ControllerBase
 
     [Authorize]
     [HttpPost("Deactivate")]
-    [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> DeactivateAccount(
@@ -38,13 +38,13 @@ public class AccountController : ControllerBase
         CancellationToken cancellationToken)
     {
         var response = await handler.HandleAsync(command, cancellationToken);
-        if (response.IsValid) return Ok(response);
+        if (response.IsValid) return Ok();
         return BadRequest(response);
     }
 
     [Authorize]
     [HttpPost("Activate")]
-    [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ActivateAccount(
@@ -53,7 +53,7 @@ public class AccountController : ControllerBase
         CancellationToken cancellationToken)
     {
         var response = await handler.HandleAsync(command, cancellationToken);
-        if (response.IsValid) return Ok(response);
+        if (response.IsValid) return Ok();
         return BadRequest(response);
     }
 }

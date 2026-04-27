@@ -1,0 +1,25 @@
+﻿using BankTransferApp.Application.Handlers.Transactions.DepositMoney;
+using BankTransferApp.Domain.Handlers;
+using Microsoft.AspNetCore.Mvc;
+
+namespace BankTransferApp.Api.Controllers;
+
+[ApiController]
+[Route("api/v1/[controller]")]
+[Produces("application/json")]
+public class TransactionController : ControllerBase
+{
+    [HttpPost("Deposit")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DepositMoney(
+        [FromServices] DepositMoneyHandler handler,
+        [FromBody] DepositMoneyCommand command,
+        CancellationToken cancellationToken)
+    {
+        var response = await handler.HandleAsync(command, cancellationToken);
+        if (response.IsValid) return Ok();
+        return BadRequest(response);
+    }
+}

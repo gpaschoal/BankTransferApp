@@ -14,9 +14,21 @@ public abstract class RepositoryBase<T>(AppDbContext dbContext) : IRepository<T>
         await Queryable.AddAsync(entity, cancellationToken);
     }
 
-    public async Task DeleteAsync(T entity, CancellationToken cancellationToken)
+    public Task DeleteAsync(T entity, CancellationToken cancellationToken)
     {
-        await Queryable.AddAsync(entity, cancellationToken);
+        if (entity is IAuditedFields auditedFields)
+        {
+            auditedFields.DeletedAt ??= DateTime.UtcNow;
+            dbContext.Entry(entity).State = EntityState.Modified;
+        }
+        else Queryable.Remove(entity);
+
+        return Task.CompletedTask;
+    }
+
+    public Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return Queryable.AnyAsync(e => e.Id == id, cancellationToken);
     }
 
     public async Task<T> GetByIdAsync(Guid id, CancellationToken cancellationToken)
@@ -24,8 +36,9 @@ public abstract class RepositoryBase<T>(AppDbContext dbContext) : IRepository<T>
         return await Queryable.FindAsync([id], cancellationToken);
     }
 
-    public async Task UpdateAync(T entity, CancellationToken cancellationToken)
+    public Task UpdateAsync(T entity, CancellationToken cancellationToken)
     {
-        await Queryable.AddAsync(entity, cancellationToken);
+        dbContext.Entry(entity).State = EntityState.Modified;
+        return Task.CompletedTask;
     }
 }

@@ -4,5 +4,6 @@ public enum ETransactionType
 {
     Deposit = 1,
     Withdrawal = 2,
-    Transfer = 3
+    TransferIn = 3,
+    TransferOut = 4,
 }

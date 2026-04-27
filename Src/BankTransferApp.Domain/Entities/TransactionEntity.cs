@@ -12,4 +12,21 @@ public class TransactionEntity : IEntity
     public AccountEntity Account { get; set; }
     public Guid BalanceId { get; set; }
     public BalancePerMonthEntity Balance { get; set; }
+
+    public static TransactionEntity Create(
+        decimal value,
+        ETransactionType type,
+        Guid accountId,
+        Guid balanceId)
+    {
+        return new TransactionEntity
+        {
+            Id = Guid.CreateVersion7(),
+            Value = value,
+            Reference = DateTime.UtcNow,
+            Type = type,
+            AccountId = accountId,
+            BalanceId = balanceId
+        };
+    }
 }
