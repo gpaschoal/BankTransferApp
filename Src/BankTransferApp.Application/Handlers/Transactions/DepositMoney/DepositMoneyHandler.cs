@@ -12,7 +12,8 @@ public class DepositMoneyHandler(
         ILogger<DepositMoneyHandler> logger,
         IAccountRepository accountRepository,
         IDepositRepository depositRepository,
-        IBalancePerMonthEntityRepository balancePerMonthEntityRepository,
+        IBalancePerMonthRepository balancePerMonthRepository,
+        ITransactionRepository transactionRepository,
         IUnitOfWork unitOfWork
     ) : IHandler<DepositMoneyCommand, Result>
 {
@@ -33,23 +34,26 @@ public class DepositMoneyHandler(
             var currentMonthReference = DateTime.UtcNow.Month;
             var currentYearReference = DateTime.UtcNow.Year;
 
-            var balance = await balancePerMonthEntityRepository.GetBalanceAsync(request.AccountId, currentMonthReference, currentYearReference, cancellationToken);
+            var balance = await balancePerMonthRepository.GetBalanceAsync(request.AccountId, currentMonthReference, currentYearReference, cancellationToken);
 
             if (balance is null)
             {
                 balance = BalancePerMonthEntity.Create(request.AccountId, currentMonthReference, currentYearReference);
-                await balancePerMonthEntityRepository.AddAsync(balance, cancellationToken);
+                await unitOfWork.BeginTransactionAsync(cancellationToken);
+                await balancePerMonthRepository.AddAsync(balance, cancellationToken);
+                await unitOfWork.CommitTransactionAsync(cancellationToken);
             }
 
+            await unitOfWork.BeginTransactionAsync(cancellationToken);
             var transaction = TransactionEntity.Create(request.Amount, ETransactionType.Deposit, request.AccountId, balance.Id);
 
             balance.AddTransaction(transaction);
 
             var deposit = DepositEntity.Create(request.Amount, request.AccountId, transaction.Id);
 
-            await unitOfWork.BeginTransactionAsync(cancellationToken);
+            await balancePerMonthRepository.UpdateAsync(balance, cancellationToken);
 
-            await balancePerMonthEntityRepository.UpdateAsync(balance, cancellationToken);
+            await transactionRepository.AddAsync(transaction, cancellationToken);
 
             await depositRepository.AddAsync(deposit, cancellationToken);
 

@@ -38,7 +38,7 @@ public abstract class RepositoryBase<T>(AppDbContext dbContext) : IRepository<T>
 
     public Task UpdateAsync(T entity, CancellationToken cancellationToken)
     {
-        dbContext.Entry(entity).State = EntityState.Modified;
+        dbContext.Update(entity);
         return Task.CompletedTask;
     }
 }

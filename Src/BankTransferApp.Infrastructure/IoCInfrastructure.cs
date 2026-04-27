@@ -24,6 +24,6 @@ public static class IoCInfrastructure
         services.AddScoped<IWithdrawalRepository, WithdrawalRepository>();
         services.AddScoped<ITransferRepository, TransferRepository>();
         services.AddScoped<ITransactionRepository, TransactionRepository>();
-        services.AddScoped<IBalancePerMonthEntityRepository, BalancePerMonthEntityRepository>();
+        services.AddScoped<IBalancePerMonthRepository, BalancePerMonthRepository>();
     }
 }

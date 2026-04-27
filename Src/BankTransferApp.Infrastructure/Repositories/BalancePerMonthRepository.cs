@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BankTransferApp.Infrastructure.Repositories;
 
-public class BalancePerMonthEntityRepository(AppDbContext dbContext) 
-    : RepositoryBase<BalancePerMonthEntity>(dbContext), IBalancePerMonthEntityRepository
+public class BalancePerMonthRepository(AppDbContext dbContext) 
+    : RepositoryBase<BalancePerMonthEntity>(dbContext), IBalancePerMonthRepository
 {
     public async Task<BalancePerMonthEntity> GetBalanceAsync(Guid accountId, int currentMonthReference, int currentYearReference, CancellationToken cancellationToken)
     {

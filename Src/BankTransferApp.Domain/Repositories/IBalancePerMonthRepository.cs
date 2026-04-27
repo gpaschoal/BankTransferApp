@@ -2,7 +2,7 @@
 
 namespace BankTransferApp.Domain.Repositories;
 
-public interface IBalancePerMonthEntityRepository : IRepository<BalancePerMonthEntity>
+public interface IBalancePerMonthRepository : IRepository<BalancePerMonthEntity>
 {
     Task<BalancePerMonthEntity> GetBalanceAsync(Guid accountId, int currentMonthReference, int currentYearReference, CancellationToken cancellationToken);
 }

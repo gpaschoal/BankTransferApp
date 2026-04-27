@@ -27,8 +27,6 @@ public class BalancePerMonthEntity : IEntity
 
     public void AddTransaction(TransactionEntity transaction)
     {
-        Transactions.Add(transaction);
-
         if (transaction.Type == Enums.ETransactionType.Deposit 
             || transaction.Type == Enums.ETransactionType.TransferIn)
         {
