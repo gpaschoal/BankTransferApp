@@ -17,12 +17,12 @@ public class TransactionMapping : IEntityTypeConfiguration<TransactionEntity>
         builder.Property(x => x.Reference).IsRequired().HasColumnName("Reference");
 
         builder.Property(x => x.Type).IsRequired().HasColumnName("Type").HasColumnType("int");
-        
+
         builder.Property(x => x.AccountId).IsRequired().HasColumnName("AccountId");
         builder.HasOne(x => x.Account).WithMany()
             .HasForeignKey(x => x.AccountId).OnDelete(DeleteBehavior.NoAction);
 
-        builder.Property(x => x.BalanceId).IsRequired().HasColumnName("BalanceId");
+        builder.Property(x => x.BalanceId).HasColumnName("BalanceId");
         builder.HasOne(x => x.Balance).WithMany()
             .HasForeignKey(x => x.BalanceId).OnDelete(DeleteBehavior.NoAction);
     }

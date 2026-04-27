@@ -20,8 +20,6 @@ public static class IoCInfrastructure
 
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IAccountRepository, AccountRepository>();
-        services.AddScoped<IDepositRepository, DepositRepository>();
-        services.AddScoped<IWithdrawalRepository, WithdrawalRepository>();
         services.AddScoped<ITransferRepository, TransferRepository>();
         services.AddScoped<ITransactionRepository, TransactionRepository>();
         services.AddScoped<IBalancePerMonthRepository, BalancePerMonthRepository>();

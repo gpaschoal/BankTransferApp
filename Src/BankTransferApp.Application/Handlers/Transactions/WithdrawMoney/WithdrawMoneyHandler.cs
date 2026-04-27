@@ -3,24 +3,28 @@ using BankTransferApp.Domain.Entities;
 using BankTransferApp.Domain.Enums;
 using BankTransferApp.Domain.Handlers;
 using BankTransferApp.Domain.Repositories;
+using BankTransferApp.Domain.Services;
 using Microsoft.Extensions.Logging;
 
-namespace BankTransferApp.Application.Handlers.Transactions.DepositMoney;
+namespace BankTransferApp.Application.Handlers.Transactions.WithdrawMoney;
 
-public class DepositMoneyHandler(
-        ILogger<DepositMoneyHandler> logger,
+public class WithdrawMoneyHandler(
+        ILogger<WithdrawMoneyHandler> logger,
         IAccountRepository accountRepository,
         ITransactionRepository transactionRepository,
-        IUnitOfWork unitOfWork
-    ) : IHandler<DepositMoneyCommand, Result>
+        IUnitOfWork unitOfWork,
+        IUserContextService userContextService
+    ) : IHandler<WithdrawMoneyCommand, Result>
 {
     public async Task<Result> HandleAsync(
-        DepositMoneyCommand request,
+        WithdrawMoneyCommand request,
         CancellationToken cancellationToken)
     {
-        DepositMoneyValidator validator = new();
+        WithdrawMoneyValidator validator = new();
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid) return validationResult.ToResult();
+
+        userContextService.ThrownsIfUserNotLoggedIn();
 
         try
         {
@@ -30,7 +34,7 @@ public class DepositMoneyHandler(
 
             await unitOfWork.BeginTransactionAsync(cancellationToken);
 
-            var transaction = TransactionEntity.Create(request.Amount, ETransactionType.Deposit, request.AccountId);
+            var transaction = TransactionEntity.Create(request.Amount, ETransactionType.Withdraw, request.AccountId);
 
             await transactionRepository.AddAsync(transaction, cancellationToken);
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using BankTransferApp.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BankTransferApp.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260427220314_FixDepositWithdrawLogic")]
+    partial class FixDepositWithdrawLogic
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -127,7 +130,7 @@ namespace BankTransferApp.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("AccountId");
 
-                    b.Property<Guid?>("BalanceId")
+                    b.Property<Guid>("BalanceId")
                         .HasColumnType("uuid")
                         .HasColumnName("BalanceId");
 
@@ -377,7 +380,8 @@ namespace BankTransferApp.Infrastructure.Migrations
                     b.HasOne("BankTransferApp.Domain.Entities.BalancePerMonthEntity", "Balance")
                         .WithMany()
                         .HasForeignKey("BalanceId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("BankTransferApp.Domain.Entities.BalancePerMonthEntity", null)
                         .WithMany("Transactions")

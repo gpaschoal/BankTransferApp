@@ -24,20 +24,4 @@ public class BalancePerMonthEntity : IEntity
             Balance = 0
         };
     }
-
-    public void AddTransaction(TransactionEntity transaction)
-    {
-        if (transaction.Type == Enums.ETransactionType.Deposit 
-            || transaction.Type == Enums.ETransactionType.TransferIn)
-        {
-            Balance += transaction.Value;
-            return;
-        }
-
-        if(transaction.Type == Enums.ETransactionType.Withdrawal 
-            || transaction.Type == Enums.ETransactionType.TransferOut)
-        {
-            Balance -= transaction.Value;
-        }
-    }
 }
