@@ -1,8 +1,8 @@
 ﻿namespace BankTransferApp.Domain.Queries;
 
-public class QueryCommand
+public abstract class QueryCommand
 {
-    public QueryCommand()
+    protected QueryCommand()
     {
         if (PageSize <= 0) PageSize = 10;
 

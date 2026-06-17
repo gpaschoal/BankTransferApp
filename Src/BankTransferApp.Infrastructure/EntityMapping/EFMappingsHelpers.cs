@@ -26,8 +26,6 @@ public static class EFMappingsHelpers
         builder.HasOne(x => x.DeletedBy).WithMany()
                     .HasForeignKey(x => x.DeletedById)
                     .OnDelete(DeleteBehavior.NoAction);
-
-        builder.HasQueryFilter(x => x.DeletedAt == null);
     }
 
     public static void MapActivableFields<T>(EntityTypeBuilder<T> builder)
